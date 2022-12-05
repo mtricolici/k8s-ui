@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"k8s_ui/k8s"
-	"strings"
 )
 
 const (
@@ -15,9 +14,26 @@ const (
 
 func buildMenuItems(items [][]string) []string {
 	menuItems := make([]string, len(items))
+	max := make([]int, len(items))
+
+	for _, line := range items {
+		for col, colValue := range line {
+			if max[col] < len(colValue) {
+				max[col] = len(colValue)
+			}
+		}
+	}
 
 	for i, line := range items {
-		menuItems[i] = strings.Join(line[:], " ")
+		menuItems[i] = ""
+
+		for col, colValue := range line {
+			format := fmt.Sprintf("%s-%d%s", "%", max[col], "s")
+			menuItems[i] += fmt.Sprintf(format, colValue)
+			if col < len(line)-1 {
+				menuItems[i] += " "
+			}
+		}
 	}
 
 	return menuItems

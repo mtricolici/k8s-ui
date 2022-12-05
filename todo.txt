@@ -1,0 +1,11 @@
+- show shortcuts menu on the right?
+- fix navigation when items are too many and don't fit on the screen
+- handle terminal resize - refresh?
+- describe pods
+- pod logs
+- pod previous logs
+- pod execute command
+- pod: filter by name (allow regex?)
+- refresh on f5
+- show deployments
+- show 'all' ?

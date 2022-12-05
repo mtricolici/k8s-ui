@@ -28,7 +28,7 @@ func exec_kubectl(args []string) ([][]string, error) {
 	return result, nil
 }
 
-func K8s_namespaces() [][]string {
+func exec_get_namespaces() [][]string {
 	result, err := exec_kubectl(get_namespaces)
 
 	if err != nil {

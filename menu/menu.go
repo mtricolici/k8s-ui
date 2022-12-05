@@ -15,7 +15,7 @@ type (
 
 func BuildMenuItems(items [][]string) []string {
 	menuItems := make([]string, len(items))
-	max := make([]int, len(items))
+	max := make([]int, len(items[0]))
 
 	for _, line := range items {
 		for col, colValue := range line {
@@ -42,7 +42,11 @@ func BuildMenuItems(items [][]string) []string {
 
 func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
 	for i, item := range items {
-		if i == selectedIndex {
+		if i == 0 {
+			screen.ColorOn(ncurses.COLOR_TABLE_HEADER)
+			screen.Println(item)
+			screen.ColorOff(ncurses.COLOR_TABLE_HEADER)
+		} else if i == selectedIndex {
 			screen.ColorOn(ncurses.COLOR_SELECTED)
 			screen.Println(item)
 			screen.ColorOff(ncurses.COLOR_SELECTED)
@@ -59,7 +63,7 @@ func ShowMenu(
 	headerFunc MenuHeaderFunc,
 	handleKeyFunc MenuHandleKeyFunc) {
 
-	menuIdx := 0
+	menuIdx := 1
 
 	for {
 		screen.Clear()
@@ -73,11 +77,11 @@ func ShowMenu(
 		case gc.KEY_DOWN:
 			menuIdx++
 			if menuIdx >= len(menuItems) {
-				menuIdx = 0
+				menuIdx = 1
 			}
 		case gc.KEY_UP:
 			menuIdx--
-			if menuIdx < 0 {
+			if menuIdx < 1 {
 				menuIdx = len(menuItems) - 1
 			}
 		case gc.KEY_ESC:

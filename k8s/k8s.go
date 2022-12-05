@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	get_namespaces []string = []string{"get", "ns", "--no-headers", "--sort-by", ".metadata.name"}
+	get_namespaces []string = []string{"get", "ns", "--sort-by", ".metadata.name"}
+	get_pods       []string = []string{"get", "po", "--sort-by", ".metadata.name"}
 )
 
 func exec_kubectl(args []string) ([][]string, error) {
@@ -33,6 +34,16 @@ func exec_get_namespaces() [][]string {
 
 	if err != nil {
 		log.Fatal("Error fetching namespaces: ", err)
+	}
+
+	return result
+}
+
+func exec_get_pods(namespace string) [][]string {
+	result, err := exec_kubectl(append(get_pods, []string{"-n", namespace}...))
+
+	if err != nil {
+		log.Fatal("Error fetching pods: ", err)
 	}
 
 	return result

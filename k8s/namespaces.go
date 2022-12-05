@@ -1,7 +1,6 @@
 package k8s
 
 import (
-	"fmt"
 	"k8s_ui/menu"
 	"k8s_ui/ncurses"
 
@@ -24,7 +23,9 @@ func drawNamespacesHeader(screen *gc.Window) {
 }
 
 func handleNamespacesKey(screen *gc.Window, key gc.Key, selectedItem []string) bool {
-	msg := fmt.Sprintf("%s", selectedItem)
-	menu.ShowWarning(screen, msg)
+	if key == gc.KEY_RETURN {
+		ShowPods(screen, selectedItem[0])
+		return true
+	}
 	return false
 }

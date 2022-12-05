@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/menu"
 	"k8s_ui/ncurses"
-	"time"
 
 	gc "github.com/rthornton128/goncurses"
 )
@@ -13,45 +13,21 @@ func main() {
 	scr := ncurses.Init()
 	defer ncurses.Done()
 
-	ns := k8s.K8s_namespaces()
-	menuItems := menu.BuildMenuItems(ns)
+	namespaces := k8s.K8s_namespaces()
+	menuItems := menu.BuildMenuItems(namespaces)
 
-	shouldStop := false
-	menuIdx := 0
+	menu.ShowMenu(scr, namespaces, menuItems, drawHeader, handleKey)
+}
 
-	for {
-		scr.Clear()
-		scr.ColorOn(ncurses.COLOR_HEADER)
-		scr.Println("*** Namespaces:")
-		scr.ColorOff(ncurses.COLOR_HEADER)
+func drawHeader(screen *gc.Window) {
 
-		menu.ShowMenu(scr, menuItems, menuIdx)
+	screen.ColorOn(ncurses.COLOR_HEADER)
+	screen.Println("*** Namespaces:")
+	screen.ColorOff(ncurses.COLOR_HEADER)
+}
 
-		scr.Refresh()
-		key := scr.GetChar()
-		switch key {
-		case gc.KEY_DOWN:
-			menuIdx++
-			if menuIdx >= len(menuItems) {
-				menuIdx = 0
-			}
-		case gc.KEY_UP:
-			menuIdx--
-			if menuIdx < 0 {
-				menuIdx = len(menuItems) - 1
-			}
-		case gc.KEY_ESC:
-			shouldStop = true
-		default:
-			scr.ColorOn(ncurses.COLOR_WARNING)
-			scr.MovePrint(0, 30, "Warning: key not bound")
-			scr.ColorOff(ncurses.COLOR_WARNING)
-			scr.Refresh()
-			time.Sleep(300 * time.Millisecond)
-		}
-
-		if shouldStop {
-			break
-		}
-	}
+func handleKey(screen *gc.Window, key gc.Key, selectedItem []string) bool {
+	msg := fmt.Sprintf("%s", selectedItem)
+	menu.ShowWarning(screen, msg)
+	return false
 }

@@ -8,9 +8,9 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
-func ShowPods(screen *gc.Window, ns string) {
+func ShowPods(screen *gc.Window) {
 
-	pods := exec_get_pods(ns)
+	pods := exec_get_pods(currentNamespace)
 
 	menuItems := menu.BuildMenuItems(pods)
 
@@ -20,7 +20,7 @@ func ShowPods(screen *gc.Window, ns string) {
 func drawPodsHeader(screen *gc.Window) {
 
 	screen.ColorOn(ncurses.COLOR_HEADER)
-	screen.Println("*** ns: '???' pods:")
+	screen.Println(fmt.Sprintf("*** ns: '%s' pods:", currentNamespace))
 	screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

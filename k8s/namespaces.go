@@ -7,6 +7,10 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
+var (
+	currentNamespace string
+)
+
 func ShowNamespaces(screen *gc.Window) {
 
 	namespaces := exec_get_namespaces()
@@ -24,7 +28,8 @@ func drawNamespacesHeader(screen *gc.Window) {
 
 func handleNamespacesKey(screen *gc.Window, key gc.Key, selectedItem []string) bool {
 	if key == gc.KEY_RETURN {
-		ShowPods(screen, selectedItem[0])
+		currentNamespace = selectedItem[0]
+		ShowPods(screen)
 		return true
 	}
 	return false

@@ -1,12 +1,10 @@
 package menu
 
-import "fmt"
+import (
+	"fmt"
+	"k8s_ui/ncurses"
 
-const (
-	clearScreen string = "\033c"
-	colorReset  string = "\033[0m"
-	fgColor     string = "\u001b[30m"
-	bgColor     string = "\u001b[47;1m"
+	gc "github.com/rthornton128/goncurses"
 )
 
 func BuildMenuItems(items [][]string) []string {
@@ -36,16 +34,14 @@ func BuildMenuItems(items [][]string) []string {
 	return menuItems
 }
 
-func ClearScreen() {
-	fmt.Print(clearScreen)
-}
-
-func ShowMenu(items []string, selectedIndex int) {
+func ShowMenu(screen *gc.Window, items []string, selectedIndex int) {
 	for i, item := range items {
 		if i == selectedIndex {
-			fmt.Print(string(fgColor), string(bgColor), item, string(colorReset), "\n")
+			screen.ColorOn(ncurses.COLOR_SELECTED)
+			screen.Println(item)
+			screen.ColorOff(ncurses.COLOR_SELECTED)
 		} else {
-			fmt.Println(item)
+			screen.Println(item)
 		}
 	}
 }

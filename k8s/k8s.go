@@ -1,21 +1,39 @@
 package k8s
 
 import (
-	"fmt"
 	"log"
 	"os/exec"
+	"regexp"
+	"strings"
 )
 
 var (
 	get_namespaces []string = []string{"get", "ns", "--no-headers", "--sort-by", ".metadata.name"}
 )
 
-func K8s_namespaces() {
+func exec_kubectl(args []string) ([][]string, error) {
+	out, err := exec.Command("kubectl", args[:]...).Output()
+	if err != nil {
+		return nil, err
+	}
 
-	out, err := exec.Command("kubectl", get_namespaces[:]...).Output()
+	result := [][]string{}
+
+	for _, line := range strings.Split(strings.TrimSuffix(string(out), "\n"), "\n") {
+
+		items := regexp.MustCompile(`\s+`).Split(line, -1)
+		result = append(result, items)
+	}
+
+	return result, nil
+}
+
+func K8s_namespaces() [][]string {
+	result, err := exec_kubectl(get_namespaces)
+
 	if err != nil {
 		log.Fatal("Error fetching namespaces: ", err)
 	}
 
-	fmt.Printf("%s\n", out)
+	return result
 }

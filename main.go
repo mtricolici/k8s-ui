@@ -8,5 +8,6 @@ import (
 func main() {
 	fmt.Printf("namespaces:\n")
 
-	k8s.K8s_namespaces()
+	ns := k8s.K8s_namespaces()
+	fmt.Println(ns)
 }

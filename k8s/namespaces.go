@@ -24,7 +24,7 @@ func ShowNamespaces(screen *gc.Window) {
 func drawNamespacesHeader(screen *gc.Window) {
 
 	screen.ColorOn(ncurses.COLOR_HEADER)
-	screen.Printf("*** Namespaces: %d\n", namespacesCount)
+	screen.Printf(" Namespaces: %d\n", namespacesCount)
 	screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

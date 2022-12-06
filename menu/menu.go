@@ -37,23 +37,61 @@ func BuildMenuItems(items [][]string) []string {
 		}
 	}
 
+	if len(menuItems) == 1 {
+		menuItems[0] = " No resources found"
+	}
+
 	return menuItems
 }
 
-func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
-	for i, item := range items {
-		if i == 0 {
-			screen.ColorOn(ncurses.COLOR_TABLE_HEADER)
-			screen.Println(item)
-			screen.ColorOff(ncurses.COLOR_TABLE_HEADER)
-		} else if i == selectedIndex {
-			screen.ColorOn(ncurses.COLOR_SELECTED)
-			screen.Println(item)
-			screen.ColorOff(ncurses.COLOR_SELECTED)
-		} else {
-			screen.Println(item)
-		}
+func drawVerticalLineTop(screen *gc.Window, count int) {
+	screen.AddChar(gc.ACS_ULCORNER)
+	for i := 0; i < count; i++ {
+		screen.AddChar(gc.ACS_HLINE)
 	}
+	screen.AddChar(gc.ACS_URCORNER)
+}
+
+func drawVerticalLineBottom(screen *gc.Window, count int) {
+	screen.AddChar(gc.ACS_LLCORNER)
+	for i := 0; i < count; i++ {
+		screen.AddChar(gc.ACS_HLINE)
+	}
+	screen.AddChar(gc.ACS_LRCORNER)
+}
+
+func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
+	if len(items) == 1 {
+		screen.Println(items[0])
+		return
+	}
+
+	windowWidth := len(items[0])
+
+	for i, item := range items {
+
+		if i == 0 {
+			// screen.ColorOn(ncurses.COLOR_TABLE_HEADER)
+			screen.Printf(" %s", item)
+			// screen.ColorOff(ncurses.COLOR_TABLE_HEADER)
+			screen.Println()
+			drawVerticalLineTop(screen, windowWidth)
+			screen.Println()
+			continue
+		} else if i == selectedIndex {
+			screen.AddChar(gc.ACS_VLINE)
+			screen.ColorOn(ncurses.COLOR_SELECTED)
+			screen.Print(item)
+			screen.ColorOff(ncurses.COLOR_SELECTED)
+			screen.AddChar(gc.ACS_VLINE)
+		} else {
+			screen.AddChar(gc.ACS_VLINE)
+			screen.Print(item)
+			screen.AddChar(gc.ACS_VLINE)
+		}
+		screen.Println()
+	}
+	drawVerticalLineBottom(screen, windowWidth)
 }
 
 func ShowMenu(

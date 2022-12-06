@@ -25,7 +25,7 @@ func ShowPods(screen *gc.Window) {
 func drawPodsHeader(screen *gc.Window) {
 
 	screen.ColorOn(ncurses.COLOR_HEADER)
-	screen.Println(fmt.Sprintf("*** ns: '%s' pods: %d", currentNamespace, podsCount))
+	screen.Println(fmt.Sprintf(" ns: '%s' pods: %d", currentNamespace, podsCount))
 	screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

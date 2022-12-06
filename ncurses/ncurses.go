@@ -7,11 +7,10 @@ import (
 )
 
 const (
-	COLOR_DEFAULT      int16 = 1
-	COLOR_SELECTED     int16 = 2
-	COLOR_HEADER       int16 = 3
-	COLOR_WARNING      int16 = 4
-	COLOR_TABLE_HEADER int16 = 5
+	COLOR_DEFAULT  int16 = 1
+	COLOR_SELECTED int16 = 2
+	COLOR_HEADER   int16 = 3
+	COLOR_WARNING  int16 = 4
 )
 
 func Done() {
@@ -42,7 +41,6 @@ func Init() *gc.Window {
 	gc.InitPair(COLOR_SELECTED, gc.C_BLACK, gc.C_WHITE)
 	gc.InitPair(COLOR_HEADER, gc.C_GREEN, gc.C_BLACK)
 	gc.InitPair(COLOR_WARNING, gc.C_WHITE, gc.C_MAGENTA)
-	gc.InitPair(COLOR_TABLE_HEADER, gc.C_WHITE, gc.C_MAGENTA)
 
 	stdscr.SetBackground(gc.ColorPair(1))
 

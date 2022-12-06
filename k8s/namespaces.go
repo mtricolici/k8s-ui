@@ -9,12 +9,14 @@ import (
 
 var (
 	currentNamespace string
+	namespacesCount  int
 )
 
 func ShowNamespaces(screen *gc.Window) {
 
 	namespaces := exec_get_namespaces()
 	menuItems := menu.BuildMenuItems(namespaces)
+	namespacesCount = len(menuItems) - 1
 
 	menu.ShowMenu(screen, namespaces, menuItems, drawNamespacesHeader, handleNamespacesKey)
 }
@@ -22,7 +24,7 @@ func ShowNamespaces(screen *gc.Window) {
 func drawNamespacesHeader(screen *gc.Window) {
 
 	screen.ColorOn(ncurses.COLOR_HEADER)
-	screen.Println("*** Namespaces:")
+	screen.Printf("*** Namespaces: %d\n", namespacesCount)
 	screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

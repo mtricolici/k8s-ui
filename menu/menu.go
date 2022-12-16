@@ -135,29 +135,31 @@ func ShowMenu(
 
 		screen.Refresh()
 		key := screen.GetChar()
-		switch key {
-		case gc.KEY_DOWN:
-			menuIdx++
-			if menuIdx >= len(menuItems) {
-				menuIdx = len(menuItems) - 1
-			}
-			if menuIdx > drawIndexTo {
-				drawIndexFrom++
-				drawIndexTo++
-			}
-		case gc.KEY_UP:
-			menuIdx--
-			if menuIdx < 1 {
-				menuIdx = 1
-			}
-			if menuIdx < drawIndexFrom {
-				drawIndexFrom--
-				drawIndexTo--
-			}
-		case gc.KEY_ESC:
-			return
-		default:
-			if !handleKeyFunc(screen, key, items[menuIdx]) {
+		if !handleKeyFunc(screen, key, items[menuIdx]) {
+			switch key {
+			case gc.KEY_DOWN:
+				menuIdx++
+				if menuIdx >= len(menuItems) {
+					menuIdx = len(menuItems) - 1
+				}
+				if menuIdx > drawIndexTo {
+					drawIndexFrom++
+					drawIndexTo++
+				}
+			case gc.KEY_UP:
+				menuIdx--
+				if menuIdx < 1 {
+					menuIdx = 1
+				}
+				if menuIdx < drawIndexFrom {
+					drawIndexFrom--
+					drawIndexTo--
+				}
+			case gc.KEY_ESC:
+				return
+			case gc.KEY_BACKSPACE:
+				return
+			default:
 				ShowWarning(screen, "Warning: key not bound")
 			}
 		}

@@ -29,6 +29,11 @@ func drawNamespacesHeader(screen *gc.Window) {
 }
 
 func handleNamespacesKey(screen *gc.Window, key gc.Key, selectedItem []string) bool {
+	if key == gc.KEY_BACKSPACE {
+		// don't do anything, just ignore this key
+		return true
+	}
+
 	if key == gc.KEY_RETURN {
 		currentNamespace = selectedItem[0]
 		ShowPods(screen)

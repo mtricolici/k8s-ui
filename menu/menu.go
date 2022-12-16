@@ -67,11 +67,11 @@ func drawVerticalLineBottom(y int, x int, screen *gc.Window, count int) {
 
 func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
 	if len(items) == 1 {
-		screen.Println(items[0])
+		screen.MovePrint(MENU_TOP_LEFT_Y, MENU_TOP_LEFT_X, items[0])
 		return
 	}
 
-	windowWidth := len(items[0])
+	windowHorizontalSize := len(items[0])
 
 	for i, item := range items {
 		x := MENU_TOP_LEFT_X + 1 // column +1 (for border)
@@ -82,7 +82,7 @@ func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
 			screen.MovePrint(y, x, item)
 			// screen.ColorOff(ncurses.COLOR_TABLE_HEADER)
 			screen.Println()
-			drawVerticalLineTop(y+1, x-1, screen, windowWidth)
+			drawVerticalLineTop(y+1, x-1, screen, windowHorizontalSize)
 			screen.Println()
 			continue
 		} else if i == selectedIndex {
@@ -101,7 +101,7 @@ func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
 
 	x := MENU_TOP_LEFT_X
 	y := MENU_TOP_LEFT_Y + len(items) + 1
-	drawVerticalLineBottom(y, x, screen, windowWidth)
+	drawVerticalLineBottom(y, x, screen, windowHorizontalSize)
 }
 
 func ShowMenu(

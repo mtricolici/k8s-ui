@@ -1,5 +1,6 @@
 - show shortcuts menu on the right?
-- fix navigation when items are too many and don't fit on the screen
++ fix navigation when items are too many and don't fit on the screen
+- handle page-up & page-down keys
 - handle terminal resize - refresh?
 - describe pods
 - pod logs

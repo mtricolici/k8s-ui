@@ -65,7 +65,7 @@ func drawVerticalLineBottom(y int, x int, screen *gc.Window, count int) {
 	screen.MoveAddChar(y, x+count+1, gc.ACS_LRCORNER)
 }
 
-func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
+func drawMenu(screen *gc.Window, items []string, selectedIndex int, drawIndexFrom int, drawIndexTo int) {
 	if len(items) == 1 {
 		screen.MovePrint(MENU_TOP_LEFT_Y, MENU_TOP_LEFT_X, items[0])
 		return
@@ -73,34 +73,40 @@ func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
 
 	windowHorizontalSize := len(items[0])
 
+	x := MENU_TOP_LEFT_X
+	y := MENU_TOP_LEFT_Y
+
 	for i, item := range items {
-		x := MENU_TOP_LEFT_X + 1 // column +1 (for border)
-		y := MENU_TOP_LEFT_Y + i // line +1 (for border)
 
 		if i == 0 {
+			screen.MovePrint(y, x+1, item)
+			y++ // Move to next line
+			drawVerticalLineTop(y, x, screen, windowHorizontalSize)
+			y++ // Move to next line
 			// screen.ColorOn(ncurses.COLOR_TABLE_HEADER)
-			screen.MovePrint(y, x, item)
 			// screen.ColorOff(ncurses.COLOR_TABLE_HEADER)
-			screen.Println()
-			drawVerticalLineTop(y+1, x-1, screen, windowHorizontalSize)
-			screen.Println()
 			continue
-		} else if i == selectedIndex {
-			screen.MoveAddChar(y+1, x-1, gc.ACS_VLINE)
+		}
+
+		if i < drawIndexFrom || i > drawIndexTo {
+			continue // Ingore hidden items
+		}
+
+		if i == selectedIndex {
+			screen.MoveAddChar(y, x, gc.ACS_VLINE)
 			screen.ColorOn(ncurses.COLOR_SELECTED)
-			screen.MovePrint(y+1, x, item)
+			screen.MovePrint(y, x+1, item)
 			screen.ColorOff(ncurses.COLOR_SELECTED)
 			screen.AddChar(gc.ACS_VLINE)
+			y++ // Move to next line
 		} else {
-			screen.MoveAddChar(y+1, x-1, gc.ACS_VLINE)
-			screen.MovePrint(y+1, x, item)
+			screen.MoveAddChar(y, x, gc.ACS_VLINE)
+			screen.MovePrint(y, x+1, item)
 			screen.AddChar(gc.ACS_VLINE)
+			y++ // Move to next line
 		}
-		screen.Println()
 	}
 
-	x := MENU_TOP_LEFT_X
-	y := MENU_TOP_LEFT_Y + len(items) + 1
 	drawVerticalLineBottom(y, x, screen, windowHorizontalSize)
 }
 
@@ -113,11 +119,19 @@ func ShowMenu(
 
 	menuIdx := 1
 
+	screen_max_lines, _ := screen.MaxYX()
+
+	initial_index_from := 1
+	initial_index_to := screen_max_lines - MENU_TOP_LEFT_Y - 10
+
+	drawIndexFrom := initial_index_from
+	drawIndexTo := initial_index_to
+
 	for {
 		screen.Clear()
 		headerFunc(screen) // Draw custom header
 
-		drawMenu(screen, menuItems, menuIdx)
+		drawMenu(screen, menuItems, menuIdx, drawIndexFrom, drawIndexTo)
 
 		screen.Refresh()
 		key := screen.GetChar()
@@ -125,12 +139,20 @@ func ShowMenu(
 		case gc.KEY_DOWN:
 			menuIdx++
 			if menuIdx >= len(menuItems) {
-				menuIdx = 1
+				menuIdx = len(menuItems) - 1
+			}
+			if menuIdx > drawIndexTo {
+				drawIndexFrom++
+				drawIndexTo++
 			}
 		case gc.KEY_UP:
 			menuIdx--
 			if menuIdx < 1 {
-				menuIdx = len(menuItems) - 1
+				menuIdx = 1
+			}
+			if menuIdx < drawIndexFrom {
+				drawIndexFrom--
+				drawIndexTo--
 			}
 		case gc.KEY_ESC:
 			return

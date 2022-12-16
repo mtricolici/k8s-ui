@@ -8,6 +8,11 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
+const (
+	MENU_TOP_LEFT_X = 10 // Vertical Column
+	MENU_TOP_LEFT_Y = 2  // Horizontal Line
+)
+
 type (
 	MenuHeaderFunc    func(screen *gc.Window)
 	MenuHandleKeyFunc func(screen *gc.Window, key gc.Key, selectedItem []string) bool
@@ -44,20 +49,20 @@ func BuildMenuItems(items [][]string) []string {
 	return menuItems
 }
 
-func drawVerticalLineTop(screen *gc.Window, count int) {
-	screen.AddChar(gc.ACS_ULCORNER)
+func drawVerticalLineTop(y int, x int, screen *gc.Window, count int) {
+	screen.MoveAddChar(y, x, gc.ACS_ULCORNER)
 	for i := 0; i < count; i++ {
-		screen.AddChar(gc.ACS_HLINE)
+		screen.MoveAddChar(y, x+1+i, gc.ACS_HLINE)
 	}
-	screen.AddChar(gc.ACS_URCORNER)
+	screen.MoveAddChar(y, x+count+1, gc.ACS_URCORNER)
 }
 
-func drawVerticalLineBottom(screen *gc.Window, count int) {
-	screen.AddChar(gc.ACS_LLCORNER)
+func drawVerticalLineBottom(y int, x int, screen *gc.Window, count int) {
+	screen.MoveAddChar(y, x, gc.ACS_LLCORNER)
 	for i := 0; i < count; i++ {
-		screen.AddChar(gc.ACS_HLINE)
+		screen.MoveAddChar(y, x+1+i, gc.ACS_HLINE)
 	}
-	screen.AddChar(gc.ACS_LRCORNER)
+	screen.MoveAddChar(y, x+count+1, gc.ACS_LRCORNER)
 }
 
 func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
@@ -69,29 +74,34 @@ func drawMenu(screen *gc.Window, items []string, selectedIndex int) {
 	windowWidth := len(items[0])
 
 	for i, item := range items {
+		x := MENU_TOP_LEFT_X + 1 // column +1 (for border)
+		y := MENU_TOP_LEFT_Y + i // line +1 (for border)
 
 		if i == 0 {
 			// screen.ColorOn(ncurses.COLOR_TABLE_HEADER)
-			screen.Printf(" %s", item)
+			screen.MovePrint(y, x, item)
 			// screen.ColorOff(ncurses.COLOR_TABLE_HEADER)
 			screen.Println()
-			drawVerticalLineTop(screen, windowWidth)
+			drawVerticalLineTop(y+1, x-1, screen, windowWidth)
 			screen.Println()
 			continue
 		} else if i == selectedIndex {
-			screen.AddChar(gc.ACS_VLINE)
+			screen.MoveAddChar(y+1, x-1, gc.ACS_VLINE)
 			screen.ColorOn(ncurses.COLOR_SELECTED)
-			screen.Print(item)
+			screen.MovePrint(y+1, x, item)
 			screen.ColorOff(ncurses.COLOR_SELECTED)
 			screen.AddChar(gc.ACS_VLINE)
 		} else {
-			screen.AddChar(gc.ACS_VLINE)
-			screen.Print(item)
+			screen.MoveAddChar(y+1, x-1, gc.ACS_VLINE)
+			screen.MovePrint(y+1, x, item)
 			screen.AddChar(gc.ACS_VLINE)
 		}
 		screen.Println()
 	}
-	drawVerticalLineBottom(screen, windowWidth)
+
+	x := MENU_TOP_LEFT_X
+	y := MENU_TOP_LEFT_Y + len(items) + 1
+	drawVerticalLineBottom(y, x, screen, windowWidth)
 }
 
 func ShowMenu(

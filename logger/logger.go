@@ -3,6 +3,7 @@ package logger
 import (
 	"log"
 	"os"
+	"time"
 )
 
 const (
@@ -25,4 +26,11 @@ func Init() {
 
 func Close() {
 	logFile.Close()
+}
+
+func LogExecutedTime(name string) func() {
+	start := time.Now()
+	return func() {
+		Log.Printf("%s - took %v", name, time.Since(start))
+	}
 }

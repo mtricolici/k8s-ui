@@ -10,8 +10,6 @@ func main() {
 	l.Init()
 	defer l.Close()
 
-	l.Log.Print("hi world")
-
 	screen := ncurses.Init()
 	defer ncurses.Done()
 

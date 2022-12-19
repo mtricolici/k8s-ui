@@ -5,6 +5,8 @@ import (
 	"k8s_ui/ncurses"
 	"time"
 
+	l "k8s_ui/logger"
+
 	gc "github.com/rthornton128/goncurses"
 )
 
@@ -19,6 +21,8 @@ type (
 )
 
 func BuildMenuItems(items [][]string) []string {
+	defer l.LogExecutedTime("BuildMenuItems")()
+
 	menuItems := make([]string, len(items))
 	max := make([]int, len(items[0]))
 
@@ -50,6 +54,7 @@ func BuildMenuItems(items [][]string) []string {
 }
 
 func drawVerticalLineTop(y int, x int, screen *gc.Window, count int) {
+	defer l.LogExecutedTime("drawVerticalLineTop")()
 	screen.MoveAddChar(y, x, gc.ACS_ULCORNER)
 	for i := 0; i < count; i++ {
 		screen.MoveAddChar(y, x+1+i, gc.ACS_HLINE)
@@ -58,6 +63,7 @@ func drawVerticalLineTop(y int, x int, screen *gc.Window, count int) {
 }
 
 func drawVerticalLineBottom(y int, x int, screen *gc.Window, count int) {
+	defer l.LogExecutedTime("drawVerticalLineBottom")()
 	screen.MoveAddChar(y, x, gc.ACS_LLCORNER)
 	for i := 0; i < count; i++ {
 		screen.MoveAddChar(y, x+1+i, gc.ACS_HLINE)
@@ -66,6 +72,7 @@ func drawVerticalLineBottom(y int, x int, screen *gc.Window, count int) {
 }
 
 func drawMenu(screen *gc.Window, items []string, selectedIndex int, drawIndexFrom int, drawIndexTo int) {
+	defer l.LogExecutedTime("drawMenu")()
 	if len(items) == 1 {
 		screen.MovePrint(MENU_TOP_LEFT_Y, MENU_TOP_LEFT_X, items[0])
 		return

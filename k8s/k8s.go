@@ -1,6 +1,7 @@
 package k8s
 
 import (
+	l "k8s_ui/logger"
 	"log"
 	"os/exec"
 	"regexp"
@@ -30,6 +31,8 @@ func exec_kubectl(args []string) ([][]string, error) {
 }
 
 func exec_get_namespaces() [][]string {
+	defer l.LogExecutedTime("exec_get_namespaces")()
+
 	result, err := exec_kubectl(get_namespaces)
 
 	if err != nil {
@@ -40,6 +43,8 @@ func exec_get_namespaces() [][]string {
 }
 
 func exec_get_pods(namespace string) [][]string {
+	defer l.LogExecutedTime("exec_get_pods")()
+
 	result, err := exec_kubectl(append(get_pods, []string{"-n", namespace}...))
 
 	if err != nil {

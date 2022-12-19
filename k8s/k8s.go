@@ -27,7 +27,7 @@ func exec_kubectl(args []string) ([][]string, error) {
 		result = append(result, items)
 	}
 
-	return result, nil
+	return result[:], nil
 }
 
 func exec_get_namespaces() [][]string {

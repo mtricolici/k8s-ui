@@ -30,7 +30,7 @@ func drawPodsHeader(screen *gc.Window) {
 }
 
 func handlePodsKey(screen *gc.Window, key gc.Key, selectedItem []string) bool {
-	msg := fmt.Sprintf("%s", selectedItem)
-	menu.ShowWarning(screen, msg)
+	// msg := fmt.Sprintf("%s", selectedItem)
+	// menu.ShowWarning(screen, msg)
 	return false
 }

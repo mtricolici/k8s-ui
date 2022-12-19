@@ -32,8 +32,12 @@ func handleNamespacesKey(screen *gc.Window, key gc.Key, selectedItem []string) b
 
 	if key == gc.KEY_RETURN {
 		currentNamespace = selectedItem[0]
+		saveIndex := menu.MenuCurrentItemIndex
 		ShowPods(screen)
+		// ugly yaaa :D sorry. that's open source lol
+		menu.MenuCurrentItemIndex = saveIndex
 		return true
 	}
+
 	return false
 }

@@ -35,6 +35,7 @@ func Init() *gc.Window {
 	gc.Raw(true)
 	gc.Echo(false)
 	gc.Cursor(0)
+	gc.SetEscDelay(50)
 	stdscr.Keypad(true)
 
 	gc.InitPair(COLOR_DEFAULT, gc.C_WHITE, gc.C_BLACK)

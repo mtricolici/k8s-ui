@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	get_namespaces []string = []string{"get", "ns", "--sort-by", ".metadata.name"}
-	get_pods       []string = []string{"get", "po", "--sort-by", ".metadata.name"}
+	get_namespaces = []string{"get", "ns", "--sort-by", ".metadata.name"}[:]
+	get_pods       = []string{"get", "po", "--sort-by", ".metadata.name"}[:]
 )
 
 func exec_kubectl(args []string) ([][]string, error) {

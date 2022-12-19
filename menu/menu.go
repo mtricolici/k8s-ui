@@ -10,6 +10,10 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
+var (
+	MenuCurrentItemIndex int
+)
+
 const (
 	MENU_TOP_LEFT_X = 10 // Vertical Column
 	MENU_TOP_LEFT_Y = 2  // Horizontal Line
@@ -124,7 +128,7 @@ func ShowMenu(
 	headerFunc MenuHeaderFunc,
 	handleKeyFunc MenuHandleKeyFunc) {
 
-	menuIdx := 1
+	MenuCurrentItemIndex = 1
 
 	screen_max_lines, _ := screen.MaxYX()
 
@@ -138,27 +142,34 @@ func ShowMenu(
 		screen.Erase()
 		headerFunc(screen) // Draw custom header
 
-		drawMenu(screen, menuItems, menuIdx, drawIndexFrom, drawIndexTo)
+		drawMenu(screen, menuItems, MenuCurrentItemIndex, drawIndexFrom, drawIndexTo)
 
 		screen.Refresh()
 		key := screen.GetChar()
-		if !handleKeyFunc(screen, key, items[menuIdx]) {
+
+		keyHandled := false
+		//TODO: investigate why sometimes it can be greater?!?!?!
+		if MenuCurrentItemIndex < len(items) {
+			keyHandled = handleKeyFunc(screen, key, items[MenuCurrentItemIndex])
+		}
+
+		if !keyHandled {
 			switch key {
 			case gc.KEY_DOWN:
-				menuIdx++
-				if menuIdx >= len(menuItems) {
-					menuIdx = len(menuItems) - 1
+				MenuCurrentItemIndex++
+				if MenuCurrentItemIndex >= len(menuItems) {
+					MenuCurrentItemIndex = len(menuItems) - 1
 				}
-				if menuIdx > drawIndexTo {
+				if MenuCurrentItemIndex > drawIndexTo {
 					drawIndexFrom++
 					drawIndexTo++
 				}
 			case gc.KEY_UP:
-				menuIdx--
-				if menuIdx < 1 {
-					menuIdx = 1
+				MenuCurrentItemIndex--
+				if MenuCurrentItemIndex < 1 {
+					MenuCurrentItemIndex = 1
 				}
-				if menuIdx < drawIndexFrom {
+				if MenuCurrentItemIndex < drawIndexFrom {
 					drawIndexFrom--
 					drawIndexTo--
 				}

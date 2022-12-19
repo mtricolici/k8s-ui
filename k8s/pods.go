@@ -1,7 +1,6 @@
 package k8s
 
 import (
-	"fmt"
 	"k8s_ui/menu"
 	"k8s_ui/ncurses"
 
@@ -25,7 +24,7 @@ func ShowPods(screen *gc.Window) {
 func drawPodsHeader(screen *gc.Window) {
 
 	screen.ColorOn(ncurses.COLOR_HEADER)
-	screen.Println(fmt.Sprintf(" ns: '%s' pods: %d", currentNamespace, podsCount))
+	screen.Printf("Ns '%s' pods: %d of %d", currentNamespace, menu.MenuCurrentItemIndex, podsCount)
 	screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

@@ -135,7 +135,7 @@ func ShowMenu(
 	drawIndexTo := initial_index_to
 
 	for {
-		screen.Clear()
+		screen.Erase()
 		headerFunc(screen) // Draw custom header
 
 		drawMenu(screen, menuItems, menuIdx, drawIndexFrom, drawIndexTo)

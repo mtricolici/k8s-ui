@@ -18,7 +18,7 @@ var (
 func Init() {
 	logFile, err := os.Create(log_file)
 	if err != nil {
-		log.Fatalf("Error creating file '%s'", log_file)
+		log.Panicf("Error creating file '%s'", log_file)
 	}
 
 	Log = log.New(logFile, "", log.LstdFlags|log.Lshortfile)

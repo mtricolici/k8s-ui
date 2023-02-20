@@ -36,7 +36,7 @@ func exec_get_namespaces() [][]string {
 	result, err := exec_kubectl(get_namespaces)
 
 	if err != nil {
-		log.Fatal("Error fetching namespaces: ", err)
+		log.Panic("Error fetching namespaces: ", err)
 	}
 
 	return result
@@ -48,7 +48,7 @@ func exec_get_pods(namespace string) [][]string {
 	result, err := exec_kubectl(append(get_pods, []string{"-n", namespace}...))
 
 	if err != nil {
-		log.Fatal("Error fetching pods: ", err)
+		log.Panic("Error fetching pods: ", err)
 	}
 
 	return result

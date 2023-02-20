@@ -21,15 +21,15 @@ func Init() *gc.Window {
 	stdscr, err := gc.Init()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	if !gc.HasColors() {
-		log.Fatal("Application requires a colour capable terminal")
+		log.Panic("Application requires a colour capable terminal")
 	}
 
 	if err := gc.StartColor(); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	gc.Raw(true)

@@ -32,7 +32,7 @@ func (m *MenuPods) Load() error {
 		return err
 	}
 
-	m.podsCount = len(pods)
+	m.podsCount = len(pods) - 1 // 1st is header
 	m.menu = NewMenu(m.screen, pods)
 	m.menu.FuncHeader = m.DrawHeader
 	m.menu.FuncHandleKey = m.HandleKey

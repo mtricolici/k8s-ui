@@ -137,7 +137,9 @@ func (m *Menu) draw(drawIndexFrom int, drawIndexTo int) {
 		return
 	}
 
-	windowHorizontalSize := len(m.items[0])
+	_, max_x := m.screen.MaxYX()
+
+	windowHorizontalSize := max_x - 2 - top_left_x
 
 	x := top_left_x
 	y := top_left_y
@@ -159,12 +161,14 @@ func (m *Menu) draw(drawIndexFrom int, drawIndexTo int) {
 		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x, gc.ACS_VLINE)
 
 		if i == m.Index {
+			ncurses.HLine(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, ' ', windowHorizontalSize)
 			ncurses.AddText(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, item)
 		} else {
+			ncurses.HLine(ncurses.COLOR_MENU_ITEM, y, x+1, ' ', windowHorizontalSize)
 			ncurses.AddText(ncurses.COLOR_MENU_ITEM, y, x+1, item)
 		}
 
-		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+len(item)+1, gc.ACS_VLINE)
+		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+windowHorizontalSize+1, gc.ACS_VLINE)
 		y++ // Move to next line
 	}
 

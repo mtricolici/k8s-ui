@@ -28,7 +28,7 @@ func (m *MenuNamespaces) Load() {
 	//TODO: handle errors here
 	namespaces, _ := m.k8sc.GetNamespaces()
 
-	m.namespacesCount = len(namespaces)
+	m.namespacesCount = len(namespaces) - 1 // 1st is header
 	m.menu = NewMenu(m.screen, namespaces)
 	m.menu.FuncHeader = m.DrawHeader
 	m.menu.FuncHandleKey = m.HandleKey

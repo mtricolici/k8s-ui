@@ -69,3 +69,9 @@ func AddText(color int16, y, x int, text string) {
 	screen.MovePrint(y, x, text)
 	screen.ColorOff(color)
 }
+
+func HLine(color int16, y, x int, ach gc.Char, width int) {
+	screen.ColorOn(color)
+	screen.HLine(y, x, ach, width)
+	screen.ColorOff(color)
+}

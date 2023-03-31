@@ -1,0 +1,49 @@
+package ui
+
+import (
+	"k8s_ui/k8s"
+	"k8s_ui/ncurses"
+
+	gc "github.com/rthornton128/goncurses"
+)
+
+type MenuNamespaces struct {
+	screen *gc.Window
+	k8sc   *k8s.K8SClient
+	menu   *Menu
+
+	namespacesCount int
+}
+
+func NewMenuNamespaces(screen *gc.Window) *MenuNamespaces {
+	mnu := MenuNamespaces{
+		screen: screen,
+		k8sc:   k8s.NewK8SClient(),
+		menu:   nil,
+	}
+	return &mnu
+}
+
+func (m *MenuNamespaces) Load() {
+	//TODO: handle errors here
+	namespaces, _ := m.k8sc.GetNamespaces()
+
+	m.namespacesCount = len(namespaces)
+	m.menu = NewMenu(m.screen, namespaces)
+	m.menu.FuncHeader = m.DrawHeader
+	m.menu.FuncHandleKey = m.HandleKey
+}
+
+func (m *MenuNamespaces) Show() {
+	m.menu.Show()
+}
+
+func (m *MenuNamespaces) DrawHeader() {
+	m.screen.ColorOn(ncurses.COLOR_HEADER)
+	m.screen.Printf(" Namespaces: %d of %d", m.menu.Index, m.namespacesCount)
+	m.screen.ColorOff(ncurses.COLOR_HEADER)
+}
+
+func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem []string) bool {
+	return false
+}

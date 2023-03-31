@@ -1,9 +1,9 @@
 package main
 
 import (
-	"k8s_ui/k8s"
 	l "k8s_ui/logger"
 	"k8s_ui/ncurses"
+	"k8s_ui/ui"
 )
 
 func main() {
@@ -13,5 +13,7 @@ func main() {
 	screen := ncurses.Init()
 	defer ncurses.Done()
 
-	k8s.ShowNamespaces(screen)
+	menu := ui.NewMenuNamespaces(screen)
+	menu.Load()
+	menu.Show()
 }

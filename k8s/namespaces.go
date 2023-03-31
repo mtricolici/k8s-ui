@@ -13,8 +13,9 @@ var (
 )
 
 func ShowNamespaces(screen *gc.Window) {
+	client := NewK8SClient()
 
-	namespaces := exec_get_namespaces()
+	namespaces, _ := client.GetNamespaces()
 	menuItems := menu.BuildMenuItems(namespaces)
 	namespacesCount = len(menuItems) - 1
 

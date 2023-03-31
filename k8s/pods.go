@@ -13,7 +13,8 @@ var (
 
 func ShowPods(screen *gc.Window) {
 
-	pods := exec_get_pods(currentNamespace)
+	client := NewK8SClient()
+	pods, _ := client.GetPods(currentNamespace)
 
 	menuItems := menu.BuildMenuItems(pods)
 	podsCount = len(menuItems) - 1

@@ -44,8 +44,10 @@ func (m *MenuPods) Show() {
 }
 
 func (m *MenuPods) DrawHeader() {
+	_, maxy := m.screen.MaxYX()
 	m.screen.ColorOn(ncurses.COLOR_HEADER)
-	m.screen.Printf("Ns '%s' pods: %d of %d", m.ns, m.menu.Index, m.podsCount)
+	m.screen.HLine(0, 0, gc.ACS_HLINE, maxy)
+	m.screen.MovePrintf(0, 3, " Namespace '%s' pods: %d of %d ", m.ns, m.menu.Index, m.podsCount)
 	m.screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

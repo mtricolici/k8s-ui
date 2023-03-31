@@ -156,19 +156,16 @@ func (m *Menu) draw(drawIndexFrom int, drawIndexTo int) {
 			continue // Ingore hidden items
 		}
 
+		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x, gc.ACS_VLINE)
+
 		if i == m.Index {
-			m.screen.MoveAddChar(y, x, gc.ACS_VLINE)
-			m.screen.ColorOn(ncurses.COLOR_SELECTED)
-			m.screen.MovePrint(y, x+1, item)
-			m.screen.ColorOff(ncurses.COLOR_SELECTED)
-			m.screen.AddChar(gc.ACS_VLINE)
-			y++ // Move to next line
+			ncurses.AddText(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, item)
 		} else {
-			m.screen.MoveAddChar(y, x, gc.ACS_VLINE)
-			m.screen.MovePrint(y, x+1, item)
-			m.screen.AddChar(gc.ACS_VLINE)
-			y++ // Move to next line
+			ncurses.AddText(ncurses.COLOR_MENU_ITEM, y, x+1, item)
 		}
+
+		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+len(item)+1, gc.ACS_VLINE)
+		y++ // Move to next line
 	}
 
 	m.drawVerticalLineBottom(y, x, windowHorizontalSize)
@@ -191,19 +188,18 @@ func (m *Menu) ShowError(err error) {
 }
 
 func (m *Menu) drawVerticalLineTop(y int, x int, count int) {
-	defer l.LogExecutedTime("drawVerticalLineTop")()
+	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM)
 	m.screen.MoveAddChar(y, x, gc.ACS_ULCORNER)
-	for i := 0; i < count; i++ {
-		m.screen.MoveAddChar(y, x+1+i, gc.ACS_HLINE)
-	}
+	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
 	m.screen.MoveAddChar(y, x+count+1, gc.ACS_URCORNER)
+	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
 }
 
 func (m *Menu) drawVerticalLineBottom(y int, x int, count int) {
-	defer l.LogExecutedTime("drawVerticalLineBottom")()
+
+	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM)
 	m.screen.MoveAddChar(y, x, gc.ACS_LLCORNER)
-	for i := 0; i < count; i++ {
-		m.screen.MoveAddChar(y, x+1+i, gc.ACS_HLINE)
-	}
+	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
 	m.screen.MoveAddChar(y, x+count+1, gc.ACS_LRCORNER)
+	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
 }

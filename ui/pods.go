@@ -47,6 +47,8 @@ func (m *MenuPods) Load() error {
 			{"prev logs", "p"},
 			{"describe", "d"},
 			{"exec", "e"},
+			{"filter", "F3"},
+			{"refresh", "F5"},
 		}
 	} else {
 		m.menu.Reload(pods)
@@ -72,6 +74,10 @@ func (m *MenuPods) HandleKey(key gc.Key, selectedItem []string) bool {
 	case 111: // key 'o' has been pressed
 		m.wide = !m.wide
 		m.Load()
+		return true
+	case gc.KEY_F5:
+		m.menu.ShowWarning("reloading")
+		m.Load() // reload
 		return true
 	}
 

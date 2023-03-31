@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-var (
-	get_namespaces = []string{"get", "ns", "--sort-by", ".metadata.name"}[:]
-	get_pods       = []string{"get", "po", "--sort-by", ".metadata.name"}[:]
+const (
+	get_namespaces = "get ns --sort-by .metadata.name"
+	get_pods       = "get po --sort-by .metadata.name"
 )
 
 func exec_kubectl(args []string) ([][]string, error) {
@@ -33,7 +33,7 @@ func exec_kubectl(args []string) ([][]string, error) {
 func exec_get_namespaces() [][]string {
 	defer l.LogExecutedTime("exec_get_namespaces")()
 
-	result, err := exec_kubectl(get_namespaces)
+	result, err := exec_kubectl(strings.Split(get_namespaces, " "))
 
 	if err != nil {
 		log.Panic("Error fetching namespaces: ", err)
@@ -45,7 +45,7 @@ func exec_get_namespaces() [][]string {
 func exec_get_pods(namespace string) [][]string {
 	defer l.LogExecutedTime("exec_get_pods")()
 
-	result, err := exec_kubectl(append(get_pods, []string{"-n", namespace}...))
+	result, err := exec_kubectl(append(strings.Split(get_pods, " "), []string{"-n", namespace}...))
 
 	if err != nil {
 		log.Panic("Error fetching pods: ", err)

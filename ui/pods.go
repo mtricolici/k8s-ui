@@ -69,7 +69,7 @@ func (m *MenuPods) DrawHeader() {
 	m.screen.ColorOff(ncurses.COLOR_HEADER)
 }
 
-func (m *MenuPods) HandleKey(key gc.Key, selectedItem []string) bool {
+func (m *MenuPods) HandleKey(key gc.Key, selectedItem *[]string) bool {
 	switch key {
 	case 111: // key 'o' has been pressed
 		m.wide = !m.wide

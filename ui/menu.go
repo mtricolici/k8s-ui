@@ -17,7 +17,7 @@ const (
 
 type (
 	MenuHeaderFunc    func()
-	MenuHandleKeyFunc func(key gc.Key, selectedItem []string) bool
+	MenuHandleKeyFunc func(key gc.Key, selectedItem *[]string) bool
 )
 
 type Menu struct {
@@ -84,6 +84,14 @@ func (m *Menu) Reload(newData [][]string) {
 	m.buildItems()
 }
 
+func (m *Menu) handleKey(key gc.Key) bool {
+	if m.Index > 0 && m.Index < len(m.data) {
+		return m.FuncHandleKey(key, &m.data[m.Index])
+	}
+
+	return m.FuncHandleKey(key, nil)
+}
+
 func (m *Menu) Show() {
 	m.Index = 1
 
@@ -105,13 +113,7 @@ func (m *Menu) Show() {
 		m.screen.Refresh()
 		key := m.screen.GetChar()
 
-		keyHandled := false
-		//TODO: investigate why sometimes it can be greater?!?!?!
-		if m.Index < len(m.data) {
-			keyHandled = m.FuncHandleKey(key, m.data[m.Index])
-		}
-
-		if !keyHandled {
+		if !m.handleKey(key) {
 			switch key {
 			case gc.KEY_DOWN:
 				m.Index++
@@ -237,6 +239,6 @@ func (m *Menu) drawHints() {
 		ncurses.AddText(ncurses.COLOR_HINTS_TEXT, y, x, hint[0])
 		x += len(hint[0]) + 1
 		ncurses.AddText(ncurses.COLOR_HINTS_SHORTCUT, y, x, hint[1])
-		x += len(hint[1]) + 1
+		x += len(hint[1]) + 2
 	}
 }

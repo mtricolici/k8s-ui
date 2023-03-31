@@ -1,0 +1,51 @@
+package ui
+
+import (
+	"k8s_ui/k8s"
+	"k8s_ui/ncurses"
+
+	gc "github.com/rthornton128/goncurses"
+)
+
+type MenuPods struct {
+	screen *gc.Window
+	k8sc   *k8s.K8SClient
+	menu   *Menu
+
+	ns        string
+	podsCount int
+}
+
+func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
+	mnu := MenuPods{
+		screen: screen,
+		k8sc:   k8s.NewK8SClient(),
+		menu:   nil,
+		ns:     namespace,
+	}
+	return &mnu
+}
+
+func (m *MenuPods) Load() {
+	//TODO: handle errors here
+	pods, _ := m.k8sc.GetPods(m.ns)
+
+	m.podsCount = len(pods)
+	m.menu = NewMenu(m.screen, pods)
+	m.menu.FuncHeader = m.DrawHeader
+	m.menu.FuncHandleKey = m.HandleKey
+}
+
+func (m *MenuPods) Show() {
+	m.menu.Show()
+}
+
+func (m *MenuPods) DrawHeader() {
+	m.screen.ColorOn(ncurses.COLOR_HEADER)
+	m.screen.Printf("Ns '%s' pods: %d of %d", m.ns, m.menu.Index, m.podsCount)
+	m.screen.ColorOff(ncurses.COLOR_HEADER)
+}
+
+func (m *MenuPods) HandleKey(key gc.Key, selectedItem []string) bool {
+	return false
+}

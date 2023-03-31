@@ -60,11 +60,14 @@ func (m *Menu) buildItems() {
 		m.items[i] = ""
 
 		for col, colValue := range line {
-			format := fmt.Sprintf("%s-%d%s", "%", max[col], "s")
-			m.items[i] += fmt.Sprintf(format, colValue)
-			if col < len(line)-1 {
-				m.items[i] += " "
+			if columnRightAlign(m.data[0][col]) {
+				format := fmt.Sprintf("%s%d%s ", "%", max[col], "s")
+				m.items[i] += fmt.Sprintf(format, colValue)
+			} else {
+				format := fmt.Sprintf("%s-%d%s ", "%", max[col], "s")
+				m.items[i] += fmt.Sprintf(format, colValue)
 			}
+
 		}
 	}
 

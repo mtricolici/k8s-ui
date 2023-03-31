@@ -79,6 +79,11 @@ func (m *Menu) buildItems() {
 	}
 }
 
+func (m *Menu) Reload(newData [][]string) {
+	m.data = newData
+	m.buildItems()
+}
+
 func (m *Menu) Show() {
 	m.Index = 1
 

@@ -14,6 +14,7 @@ type MenuPods struct {
 
 	ns        string
 	podsCount int
+	wide      bool
 }
 
 func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
@@ -22,27 +23,33 @@ func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
 		k8sc:   k8s.NewK8SClient(),
 		menu:   nil,
 		ns:     namespace,
+		wide:   false,
 	}
 
 	return &mnu
 }
 
 func (m *MenuPods) Load() error {
-	pods, err := m.k8sc.GetPods(m.ns)
+	pods, err := m.k8sc.GetPods(m.ns, m.wide)
 	if err != nil {
 		return err
 	}
 
 	m.podsCount = len(pods) - 1 // 1st is header
-	m.menu = NewMenu(m.screen, pods)
-	m.menu.FuncHeader = m.DrawHeader
-	m.menu.FuncHandleKey = m.HandleKey
+	if m.menu == nil {
+		m.menu = NewMenu(m.screen, pods)
+		m.menu.FuncHeader = m.DrawHeader
+		m.menu.FuncHandleKey = m.HandleKey
 
-	m.menu.Hints = [][]string{
-		{"wide", "o"},
-		{"logs", "l"},
-		{"prev logs", "p"},
-		{"describe", "d"},
+		m.menu.Hints = [][]string{
+			{"wide", "o"},
+			{"logs", "l"},
+			{"prev logs", "p"},
+			{"describe", "d"},
+			{"exec", "e"},
+		}
+	} else {
+		m.menu.Reload(pods)
 	}
 
 	return nil
@@ -61,5 +68,12 @@ func (m *MenuPods) DrawHeader() {
 }
 
 func (m *MenuPods) HandleKey(key gc.Key, selectedItem []string) bool {
+	switch key {
+	case 111: // key 'o' has been pressed
+		m.wide = !m.wide
+		m.Load()
+		return true
+	}
+
 	return false
 }

@@ -23,6 +23,7 @@ func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
 		menu:   nil,
 		ns:     namespace,
 	}
+
 	return &mnu
 }
 
@@ -36,6 +37,14 @@ func (m *MenuPods) Load() error {
 	m.menu = NewMenu(m.screen, pods)
 	m.menu.FuncHeader = m.DrawHeader
 	m.menu.FuncHandleKey = m.HandleKey
+
+	m.menu.Hints = [][]string{
+		{"wide", "o"},
+		{"logs", "l"},
+		{"prev logs", "p"},
+		{"describe", "d"},
+	}
+
 	return nil
 }
 

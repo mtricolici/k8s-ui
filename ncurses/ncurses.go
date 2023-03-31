@@ -8,11 +8,13 @@ import (
 
 const (
 	COLOR_DEFAULT            int16 = 1
-	COLOR_TITLE              int16 = 2
-	COLOR_WARNING            int16 = 3
-	COLOR_HEADER             int16 = 4
+	COLOR_WARNING            int16 = 2
+	COLOR_HEADER             int16 = 3
+	COLOR_MENU_HEADER        int16 = 4
 	COLOR_MENU_ITEM          int16 = 5
 	COLOR_MENU_ITEM_SELECTED int16 = 6
+	COLOR_HINTS_TEXT         int16 = 7
+	COLOR_HINTS_SHORTCUT     int16 = 8
 )
 
 var (
@@ -45,11 +47,14 @@ func Init() *gc.Window {
 	stdscr.Keypad(true)
 
 	gc.InitPair(COLOR_DEFAULT, gc.C_WHITE, gc.C_BLACK)
-	gc.InitPair(COLOR_TITLE, gc.C_GREEN, gc.C_BLACK)
 	gc.InitPair(COLOR_WARNING, gc.C_WHITE, gc.C_MAGENTA)
 	gc.InitPair(COLOR_HEADER, gc.C_BLACK, gc.C_WHITE)
+	gc.InitPair(COLOR_MENU_HEADER, gc.C_GREEN, gc.C_BLACK)
 	gc.InitPair(COLOR_MENU_ITEM, gc.C_WHITE, gc.C_BLUE)
 	gc.InitPair(COLOR_MENU_ITEM_SELECTED, gc.C_BLACK, gc.C_CYAN)
+
+	gc.InitPair(COLOR_HINTS_TEXT, gc.C_WHITE, gc.C_BLACK)
+	gc.InitPair(COLOR_HINTS_SHORTCUT, gc.C_YELLOW, gc.C_BLACK)
 
 	stdscr.SetBackground(gc.ColorPair(1))
 

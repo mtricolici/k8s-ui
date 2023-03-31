@@ -12,7 +12,7 @@ import (
 
 const (
 	top_left_x = 0 // Vertical Column
-	top_left_y = 3 // Horizontal Line
+	top_left_y = 2 // Horizontal Line
 )
 
 type (
@@ -25,6 +25,8 @@ type Menu struct {
 	data   [][]string
 	items  []string
 
+	Hints [][]string
+
 	Index         int
 	FuncHeader    MenuHeaderFunc
 	FuncHandleKey MenuHandleKeyFunc
@@ -35,6 +37,7 @@ func NewMenu(screen *gc.Window, data [][]string) *Menu {
 		screen:        screen,
 		data:          data,
 		items:         nil,
+		Hints:         nil,
 		FuncHeader:    nil,
 		FuncHandleKey: nil,
 	}
@@ -91,6 +94,7 @@ func (m *Menu) Show() {
 		m.screen.Erase()
 		m.FuncHeader() // Draw custom header
 
+		m.drawHints() // Draw shortcut hints
 		m.draw(drawIndexFrom, drawIndexTo)
 
 		m.screen.Refresh()
@@ -150,7 +154,9 @@ func (m *Menu) draw(drawIndexFrom int, drawIndexTo int) {
 	for i, item := range m.items {
 
 		if i == 0 {
-			m.screen.MovePrint(y, x+1, item)
+			//m.screen.MovePrint(y, x+1, item)
+			ncurses.HLine(ncurses.COLOR_MENU_HEADER, y, x, ' ', windowHorizontalSize+2)
+			ncurses.AddText(ncurses.COLOR_MENU_HEADER, y, x+1, item)
 			y++ // Move to next line
 			m.drawVerticalLineTop(y, x, windowHorizontalSize)
 			y++ // Move to next line
@@ -209,4 +215,23 @@ func (m *Menu) drawVerticalLineBottom(y int, x int, count int) {
 	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
 	m.screen.MoveAddChar(y, x+count+1, gc.ACS_LRCORNER)
 	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
+}
+
+func (m *Menu) drawHints() {
+	if m.Hints == nil || len(m.Hints) < 1 {
+		return // no hints for this menu
+	}
+	_, max_x := m.screen.MaxYX()
+
+	x := 1
+	y := 1
+
+	ncurses.HLine(ncurses.COLOR_HINTS_TEXT, y, 0, ' ', max_x)
+
+	for _, hint := range m.Hints {
+		ncurses.AddText(ncurses.COLOR_HINTS_TEXT, y, x, hint[0])
+		x += len(hint[0]) + 1
+		ncurses.AddText(ncurses.COLOR_HINTS_SHORTCUT, y, x, hint[1])
+		x += len(hint[1]) + 1
+	}
 }

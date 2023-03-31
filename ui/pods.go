@@ -26,14 +26,17 @@ func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
 	return &mnu
 }
 
-func (m *MenuPods) Load() {
-	//TODO: handle errors here
-	pods, _ := m.k8sc.GetPods(m.ns)
+func (m *MenuPods) Load() error {
+	pods, err := m.k8sc.GetPods(m.ns)
+	if err != nil {
+		return err
+	}
 
 	m.podsCount = len(pods)
 	m.menu = NewMenu(m.screen, pods)
 	m.menu.FuncHeader = m.DrawHeader
 	m.menu.FuncHandleKey = m.HandleKey
+	return nil
 }
 
 func (m *MenuPods) Show() {

@@ -124,7 +124,7 @@ func (m *Menu) Show() {
 			case gc.KEY_BACKSPACE:
 				return
 			default:
-				m.showWarning("Warning: key not bound")
+				m.ShowWarning("Warning: key not bound")
 			}
 		}
 	}
@@ -174,9 +174,17 @@ func (m *Menu) draw(drawIndexFrom int, drawIndexTo int) {
 	m.drawVerticalLineBottom(y, x, windowHorizontalSize)
 }
 
-func (m *Menu) showWarning(message string) {
+func (m *Menu) ShowWarning(message string) {
 	m.screen.ColorOn(ncurses.COLOR_WARNING)
 	m.screen.MovePrint(0, 30, message)
+	m.screen.ColorOff(ncurses.COLOR_WARNING)
+	m.screen.Refresh()
+	time.Sleep(300 * time.Millisecond)
+}
+
+func (m *Menu) ShowError(err error) {
+	m.screen.ColorOn(ncurses.COLOR_WARNING)
+	m.screen.MovePrint(0, 30, err.Error())
 	m.screen.ColorOff(ncurses.COLOR_WARNING)
 	m.screen.Refresh()
 	time.Sleep(300 * time.Millisecond)

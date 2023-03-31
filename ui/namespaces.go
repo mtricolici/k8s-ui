@@ -49,8 +49,13 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem []string) bool {
 	if key == gc.KEY_RETURN {
 		ns := selectedItem[0] // Column 0 is ns name (we don't need other columns here)
 		podsMenu := NewMenuPods(m.screen, ns)
-		podsMenu.Load()
-		podsMenu.Show()
+		err := podsMenu.Load()
+		if err != nil {
+			m.menu.ShowError(err)
+		} else {
+			podsMenu.Show()
+		}
+
 		return true
 	}
 	return false

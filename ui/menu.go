@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	top_left_x = 10 // Vertical Column
-	top_left_y = 2  // Horizontal Line
+	top_left_x = 0 // Vertical Column
+	top_left_y = 3 // Horizontal Line
 )
 
 type (

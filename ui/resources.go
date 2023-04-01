@@ -130,6 +130,13 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
+	case 101: // character 'e' - execute a shell inside container
+		if selectedItem != nil && m.resourceType == "pod" {
+			name := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl exec -it %s -n %s -- sh", name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
 	}
 
 	return false

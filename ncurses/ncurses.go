@@ -122,9 +122,16 @@ func MessageBox(title, message string, duration int) {
 	win.Delete()
 }
 
+func Clear_screen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
+
 func ExecuteCommand(command string) {
 	gc.StdScr().Clear()
 	gc.End()
+	Clear_screen()
 
 	cmd := exec.Command("bash", "-c", command)
 	cmd.Stdin = os.Stdin
@@ -132,7 +139,7 @@ func ExecuteCommand(command string) {
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if err != nil {
-		fmt.Printf("Error: %s", err.Error())
+		fmt.Printf("Error: %s\n", err.Error())
 		time.Sleep(3 * time.Second)
 	}
 }

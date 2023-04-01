@@ -106,6 +106,10 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 			ncurses.MessageBox("Error", err.Error(), 1000)
 		}
 		return true
+	case gc.KEY_F2:
+		mnu := NewResourceTypesMenu(m.screen, m.ns)
+		mnu.Show()
+		return true
 	}
 
 	return false

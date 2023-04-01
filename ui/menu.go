@@ -26,11 +26,12 @@ type Menu struct {
 	FuncHandleKey MenuHandleKeyFunc
 
 	// menu position variables
-	top_left_x  int
-	top_left_y  int
-	menu_size_x int
-	menu_size_y int
-	show_header bool
+	top_left_x   int
+	top_left_y   int
+	menu_size_x  int
+	menu_size_y  int
+	show_header  bool
+	erase_screen bool
 
 	// navigation variables
 	draw_index_from int
@@ -47,11 +48,12 @@ func NewMenu(screen *gc.Window, data [][]string) *Menu {
 		FuncHeader:    nil,
 		FuncHandleKey: nil,
 		// set default to full screen without 2 rows for header
-		top_left_x:  0,
-		top_left_y:  2,
-		menu_size_x: max_x,
-		menu_size_y: max_y - 2,
-		show_header: true,
+		top_left_x:   0,
+		top_left_y:   2,
+		menu_size_x:  max_x,
+		menu_size_y:  max_y - 2,
+		show_header:  true,
+		erase_screen: true,
 	}
 	menu.buildItems()
 	return &menu
@@ -63,6 +65,7 @@ func (m *Menu) SetCustomPosition(x, y, size_x, size_y int, show_header bool) {
 	m.menu_size_x = size_x
 	m.menu_size_y = size_y
 	m.show_header = show_header
+	m.erase_screen = false
 }
 
 func (m *Menu) buildItems() {
@@ -165,9 +168,15 @@ func (m *Menu) Show() {
 	m.calcNavigationVars()
 
 	for {
-		m.screen.Erase()
-		m.FuncHeader() // Draw custom header
-		m.drawHints()  // Draw shortcut hints
+		if m.erase_screen {
+			m.screen.Erase()
+		}
+
+		if m.FuncHeader != nil {
+			m.FuncHeader() // Draw custom header
+		}
+
+		m.drawHints() // Draw shortcut hints
 		m.drawMenu()
 
 		m.screen.Refresh()

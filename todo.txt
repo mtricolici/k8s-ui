@@ -1,12 +1,6 @@
-- show shortcuts menu on the right?
-+ fix navigation when items are too many and don't fit on the screen
-- handle page-up & page-down keys
+- limit size of a column or entire line (do not print more than screen-w)
 - handle terminal resize - refresh?
-- describe pods
-- pod logs
-- pod previous logs
-- pod execute command
+- pod logs - choose container if more than 1
+- pod previous logs - choose container if more than 1
+- pod execute command - allow custom command (not only sh by default)
 - pod: filter by name (allow regex?)
-- refresh on f5
-- show deployments
-- show 'all' ?

@@ -10,12 +10,14 @@ import (
 const (
 	COLOR_DEFAULT            int16 = 1
 	COLOR_HEADER             int16 = 2
-	COLOR_MENU_HEADER        int16 = 3
-	COLOR_MENU_ITEM          int16 = 4
-	COLOR_MENU_ITEM_SELECTED int16 = 5
-	COLOR_HINTS_TEXT         int16 = 6
-	COLOR_HINTS_SHORTCUT     int16 = 7
-	COLOR_MESSAGEBOX         int16 = 8
+	COLOR_HEADER_HIGH        int16 = 3
+	COLOR_HEADER_HINT        int16 = 4
+	COLOR_MENU_HEADER        int16 = 5
+	COLOR_MENU_ITEM          int16 = 6
+	COLOR_MENU_ITEM_SELECTED int16 = 7
+	COLOR_HINTS_TEXT         int16 = 8
+	COLOR_HINTS_SHORTCUT     int16 = 9
+	COLOR_MESSAGEBOX         int16 = 10
 )
 
 var (
@@ -49,6 +51,9 @@ func Init() *gc.Window {
 
 	gc.InitPair(COLOR_DEFAULT, gc.C_WHITE, gc.C_BLACK)
 	gc.InitPair(COLOR_HEADER, gc.C_BLACK, gc.C_WHITE)
+	gc.InitPair(COLOR_HEADER_HIGH, gc.C_GREEN, gc.C_WHITE)
+	gc.InitPair(COLOR_HEADER_HINT, gc.C_YELLOW, gc.C_WHITE)
+
 	gc.InitPair(COLOR_MENU_HEADER, gc.C_GREEN, gc.C_BLACK)
 	gc.InitPair(COLOR_MENU_ITEM, gc.C_WHITE, gc.C_BLUE)
 	gc.InitPair(COLOR_MENU_ITEM_SELECTED, gc.C_BLACK, gc.C_CYAN)

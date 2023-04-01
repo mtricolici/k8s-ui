@@ -55,8 +55,8 @@ func (m *MenuNamespaces) Show() {
 func (m *MenuNamespaces) DrawHeader() {
 	_, maxy := m.screen.MaxYX()
 	m.screen.ColorOn(ncurses.COLOR_HEADER)
-	m.screen.HLine(0, 0, gc.ACS_HLINE, maxy)
-	m.screen.MovePrintf(0, 3, " Namespaces: %d of %d ", m.menu.Index, m.namespacesCount)
+	m.screen.HLine(0, 0, ' ', maxy)
+	m.screen.MovePrintf(0, 1, "Namespaces: %d of %d ", m.menu.Index, m.namespacesCount)
 	m.screen.ColorOff(ncurses.COLOR_HEADER)
 }
 

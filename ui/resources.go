@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
 
@@ -64,10 +65,26 @@ func (m *MenuResources) Show() {
 
 func (m *MenuResources) DrawHeader() {
 	_, maxy := m.screen.MaxYX()
-	m.screen.ColorOn(ncurses.COLOR_HEADER)
-	m.screen.HLine(0, 0, gc.ACS_HLINE, maxy)
-	m.screen.MovePrintf(0, 3, " Namespace '%s' resource %d of %d ", m.ns, m.menu.Index, m.itemsCount)
-	m.screen.ColorOff(ncurses.COLOR_HEADER)
+
+	ncurses.HLine(ncurses.COLOR_HEADER, 0, 0, ' ', maxy)
+	ncurses.AddText(ncurses.COLOR_HEADER, 0, 1, "Namespace:")
+	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, 11, m.ns)
+	x := 12 + len(m.ns)
+
+	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, "view:")
+	x += 5
+	showText := "pods"
+	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, x, showText)
+	x += len(showText)
+	// ncurses.AddChar(ncurses.COLOR_HEADER_HINT, 0, x, gc.ACS_BULLET)
+	// x += 1
+	ncurses.AddText(ncurses.COLOR_HEADER_HINT, 0, x, "<F2>")
+	x += 5
+
+	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, fmt.Sprintf("%d of %d", m.menu.Index, m.itemsCount))
+
+	//m.screen.MovePrintf(0, 3, " Namespace '%s' resource %d of %d ", m.ns,
+
 }
 
 func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {

@@ -83,7 +83,8 @@ func HLine(color int16, y, x int, ach gc.Char, width int) {
 	screen.ColorOff(color)
 }
 
-func MessageBox(title, message string, duration int) {
+// Shows a dialog and don't wait. you should close the window with .Delete() !
+func MessageBoxAsync(title, message string) *gc.Window {
 	max_y, max_x := screen.MaxYX()
 
 	win_height := 3
@@ -104,8 +105,11 @@ func MessageBox(title, message string, duration int) {
 	win.ColorOff(COLOR_MESSAGEBOX)
 	win.NoutRefresh()
 	gc.Update()
+	return win
+}
 
+func MessageBox(title, message string, duration int) {
+	win := MessageBoxAsync(title, message)
 	time.Sleep(time.Duration(duration) * time.Millisecond)
-
 	win.Delete()
 }

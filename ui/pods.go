@@ -72,12 +72,21 @@ func (m *MenuPods) DrawHeader() {
 func (m *MenuPods) HandleKey(key gc.Key, selectedItem *[]string) bool {
 	switch key {
 	case 111: // key 'o' has been pressed
+		win := ncurses.MessageBoxAsync("", "Loading ...")
 		m.wide = !m.wide
-		m.Load()
+		err := m.Load()
+		win.Delete() // close 'Loading' dialog ...
+		if err != nil {
+			ncurses.MessageBox("Error", err.Error(), 1000)
+		}
 		return true
 	case gc.KEY_F5:
-		ncurses.MessageBox("", "reloading ...", 300)
-		m.Load() // reload
+		win := ncurses.MessageBoxAsync("", "reloading ...")
+		err := m.Load() // reload
+		win.Delete()    // close 'Reloading' dialog ...
+		if err != nil {
+			ncurses.MessageBox("Error", err.Error(), 1000)
+		}
 		return true
 	}
 

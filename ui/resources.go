@@ -27,7 +27,7 @@ func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 		k8sc:         k8s.NewK8SClient(),
 		menu:         nil,
 		ns:           namespace,
-		wide:         true,
+		wide:         false,
 		resourceType: "pod", //default show pods in a namespace
 	}
 
@@ -53,6 +53,7 @@ func (m *MenuResources) Load() error {
 			{"Prev.logs", "p"},
 			{"Describe", "d"},
 			{"Exec", "e"},
+			{"Edit", "F4"},
 			{"Filter", "F3"},
 			{"Refresh", "F5"},
 		}
@@ -134,6 +135,13 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		if selectedItem != nil && m.resourceType == "pod" {
 			name := (*selectedItem)[0]
 			cmd := fmt.Sprintf("kubectl exec -it %s -n %s -- sh", name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
+	case gc.KEY_F4:
+		if selectedItem != nil {
+			name := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl edit %s %s -n %s", m.resourceType, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true

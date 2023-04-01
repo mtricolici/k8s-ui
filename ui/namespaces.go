@@ -39,6 +39,7 @@ func (m *MenuNamespaces) Load() error {
 		m.menu.Hints = [][]string{
 			{"Exit", "ESC"},
 			{"Describe", "d"},
+			{"Edit", "F4"},
 			{"Filter", "F3"},
 			{"Refresh", "F5"},
 		}
@@ -91,6 +92,14 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
+	case gc.KEY_F4:
+		if selectedItem != nil {
+			ns := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl edit ns %s", ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
+
 	}
 
 	return false

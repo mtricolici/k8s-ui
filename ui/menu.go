@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"time"
 
 	l "k8s_ui/logger"
 	"k8s_ui/ncurses"
@@ -152,7 +151,7 @@ func (m *Menu) Show() {
 			case gc.KEY_BACKSPACE:
 				return // close menu
 			default:
-				m.ShowWarning("Warning: key not bound")
+				ncurses.MessageBox("warning", "key not bound!", 300)
 			}
 		}
 	}
@@ -203,22 +202,6 @@ func (m *Menu) drawMenu() {
 	}
 
 	m.drawVerticalLineBottom(y, x, windowHorizontalSize)
-}
-
-func (m *Menu) ShowWarning(message string) {
-	m.screen.ColorOn(ncurses.COLOR_WARNING)
-	m.screen.MovePrint(0, 30, message)
-	m.screen.ColorOff(ncurses.COLOR_WARNING)
-	m.screen.Refresh()
-	time.Sleep(300 * time.Millisecond)
-}
-
-func (m *Menu) ShowError(err error) {
-	m.screen.ColorOn(ncurses.COLOR_WARNING)
-	m.screen.MovePrint(0, 30, err.Error())
-	m.screen.ColorOff(ncurses.COLOR_WARNING)
-	m.screen.Refresh()
-	time.Sleep(300 * time.Millisecond)
 }
 
 func (m *Menu) drawVerticalLineTop(y int, x int, count int) {

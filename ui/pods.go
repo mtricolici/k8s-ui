@@ -76,7 +76,7 @@ func (m *MenuPods) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		m.Load()
 		return true
 	case gc.KEY_F5:
-		m.menu.ShowWarning("reloading")
+		ncurses.MessageBox("", "reloading ...", 300)
 		m.Load() // reload
 		return true
 	}

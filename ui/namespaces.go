@@ -53,7 +53,7 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		podsMenu := NewMenuPods(m.screen, ns)
 		err := podsMenu.Load()
 		if err != nil {
-			m.menu.ShowError(err)
+			ncurses.MessageBox("error", err.Error(), 1000)
 		} else {
 			podsMenu.Show()
 		}

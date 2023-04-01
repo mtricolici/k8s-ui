@@ -139,6 +139,7 @@ func ExecuteCommand(command string) {
 	gc.StdScr().Clear()
 	gc.End()
 	Clear_screen()
+	fmt.Printf("Running: %s\n", command)
 
 	cmd := exec.Command("bash", "-c", command)
 	cmd.Stdin = os.Stdin

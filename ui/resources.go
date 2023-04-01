@@ -125,7 +125,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 	case 108: // character 'l' - view logs (valid for 'pods' only)
 		if selectedItem != nil && m.resourceType == "pod" {
 			pod := (*selectedItem)
-			container := m.chooseContainer(pod)
+			container := m.chooseContainer("Logs for ?", pod)
 			if len(container) > 0 {
 				cmd := fmt.Sprintf("kubectl logs %s -n %s -c %s| less -S", pod, m.ns, container)
 				ncurses.ExecuteCommand(cmd)
@@ -134,16 +134,23 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		return true
 	case 112: // character 'p' - view previous logs (valid for 'pods' only)
 		if selectedItem != nil && m.resourceType == "pod" {
-			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl logs -p %s -n %s | less -S", name, m.ns)
-			ncurses.ExecuteCommand(cmd)
+			pod := (*selectedItem)
+			container := m.chooseContainer("Logs for ?", pod)
+			if len(container) > 0 {
+				cmd := fmt.Sprintf("kubectl logs -p %s -n %s -c %s| less -S", pod, m.ns, container)
+				ncurses.ExecuteCommand(cmd)
+			}
 		}
 		return true
 	case 101: // character 'e' - execute a shell inside container
 		if selectedItem != nil && m.resourceType == "pod" {
-			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl exec -it %s -n %s -- sh", name, m.ns)
-			ncurses.ExecuteCommand(cmd)
+
+			pod := (*selectedItem)
+			container := m.chooseContainer("Execute where ?", pod)
+			if len(container) > 0 {
+				cmd := fmt.Sprintf("kubectl exec -it %s -n %s -c %s -- sh", pod, m.ns, container)
+				ncurses.ExecuteCommand(cmd)
+			}
 		}
 		return true
 	case gc.KEY_F4:

@@ -160,6 +160,13 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
+	case gc.KEY_F3:
+		if selectedItem != nil {
+			name := (*selectedItem)
+			cmd := fmt.Sprintf("kubectl get %s %s -n %s -o yaml|less -S", m.resourceType, name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
 	}
 
 	return false

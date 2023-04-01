@@ -47,16 +47,19 @@ func (m *MenuResources) Load() error {
 		m.menu.FuncHeader = m.DrawHeader
 		m.menu.FuncHandleKey = m.HandleKey
 
-		m.menu.Hints = [][]string{
+		m.menu.Hints1 = [][]string{
 			{"Back", "ESC"},
+			{"View yaml", "F3"},
+			{"Edit", "F4"},
+			{"Refresh", "F5"},
+			{"Filter", "F7"},
+		}
+		m.menu.Hints2 = [][]string{
+			{"Describe", "d"},
 			{"Wide", "o"},
 			{"Logs", "l"},
 			{"Prev.logs", "p"},
-			{"Describe", "d"},
 			{"Exec", "e"},
-			{"Edit", "F4"},
-			{"Filter", "F3"},
-			{"Refresh", "F5"},
 		}
 	} else {
 		m.menu.Reload(resources)

@@ -23,7 +23,8 @@ type Menu struct {
 	names  []string
 	items  []string
 
-	Hints [][]string
+	Hints1 [][]string
+	Hints2 [][]string
 
 	Index         int
 	FuncHeader    MenuHeaderFunc
@@ -50,14 +51,15 @@ func NewMenu(screen *gc.Window, data [][]string) *Menu {
 		CloseMenu:     false,
 		screen:        screen,
 		items:         nil,
-		Hints:         nil,
+		Hints1:        nil,
+		Hints2:        nil,
 		FuncHeader:    nil,
 		FuncHandleKey: nil,
 		// set default to full screen without 2 rows for header
 		top_left_x:   0,
-		top_left_y:   2,
+		top_left_y:   3,
 		menu_size_x:  max_x,
-		menu_size_y:  max_y - 2,
+		menu_size_y:  max_y - 3,
 		show_header:  true,
 		erase_screen: true,
 	}
@@ -187,7 +189,8 @@ func (m *Menu) Show() {
 			m.FuncHeader() // Draw custom header
 		}
 
-		m.drawHints() // Draw shortcut hints
+		m.drawHints(1, m.Hints1)
+		m.drawHints(2, m.Hints2) // Draw shortcut hints
 		m.drawMenu()
 
 		m.screen.Refresh()
@@ -204,8 +207,6 @@ func (m *Menu) Show() {
 			case gc.KEY_PAGEDOWN:
 				m.navigateTo(m.draw_index_to - m.draw_index_from + 1)
 			case gc.KEY_ESC:
-				return // close menu
-			case gc.KEY_BACKSPACE:
 				return // close menu
 			default:
 				ncurses.MessageBox("warning", "key not bound!", 300)
@@ -282,17 +283,16 @@ func (m *Menu) drawVerticalLineBottom(y int, x int, count int) {
 	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
 }
 
-func (m *Menu) drawHints() {
-	if m.Hints == nil || len(m.Hints) < 1 {
+func (m *Menu) drawHints(y int, hints [][]string) {
+	if hints == nil || len(hints) < 1 {
 		return // no hints for this menu
 	}
 
 	x := 1
-	y := 1
 
 	ncurses.HLine(ncurses.COLOR_HINTS_TEXT, y, m.top_left_x, ' ', m.menu_size_x)
 
-	for _, hint := range m.Hints {
+	for _, hint := range hints {
 		ncurses.AddText(ncurses.COLOR_HINTS_SHORTCUT, y, x, hint[1])
 		x += len(hint[1]) + 1
 		ncurses.AddChar(ncurses.COLOR_HINTS_SHORTCUT, y, x-1, gc.ACS_BULLET)

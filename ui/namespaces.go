@@ -36,12 +36,15 @@ func (m *MenuNamespaces) Load() error {
 		m.menu = NewMenu(m.screen, namespaces)
 		m.menu.FuncHeader = m.DrawHeader
 		m.menu.FuncHandleKey = m.HandleKey
-		m.menu.Hints = [][]string{
+		m.menu.Hints1 = [][]string{
 			{"Exit", "ESC"},
-			{"Describe", "d"},
+			{"View yaml", "F3"},
 			{"Edit", "F4"},
-			{"Filter", "F3"},
 			{"Refresh", "F5"},
+			{"Filter", "F7"},
+		}
+		m.menu.Hints2 = [][]string{
+			{"Describe", "d"},
 		}
 	} else {
 		m.menu.Reload(namespaces)

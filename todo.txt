@@ -1,6 +1,5 @@
-- limit size of a column or entire line (do not print more than screen-w)
 - handle terminal resize - refresh?
-- pod logs - choose container if more than 1
-- pod previous logs - choose container if more than 1
 - pod execute command - allow custom command (not only sh by default)
-- pod: filter by name (allow regex?)
+- resources filter by name (allow regex?)
+- service pod forward
+- deployment rollout restart

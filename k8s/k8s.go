@@ -1,6 +1,7 @@
 package k8s
 
 import (
+	"k8s_ui/utils"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -63,4 +64,28 @@ func (client *K8SClient) GetResources(ns, resource string, wide bool) ([][]strin
 		args = append(args, "-o", "wide")
 	}
 	return client.exec(args)
+}
+
+func (client *K8SClient) GetPodContainerNames(ns, pod string) ([]string, error) {
+	args := []string{
+		"get",
+		"pod",
+		pod,
+		"-n",
+		ns,
+		"-o",
+		`jsonpath='{.spec.containers[*].name}'`,
+	}
+
+	result, err := client.exec(args)
+	if err != nil {
+		return nil, err
+	}
+	// I don't know why ' appears here :D wtf. Let's just filter them
+	containers := []string{}
+	for i := range result[0] {
+		containers = append(containers, utils.ReplaceSpecialChars(result[0][i]))
+	}
+
+	return containers, nil
 }

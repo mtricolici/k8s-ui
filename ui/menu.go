@@ -125,20 +125,14 @@ func (m *Menu) adjustDrawIndexes() {
 	}
 }
 
-func (m *Menu) navigateUp(jump int) {
-	if m.Index-jump < 1 {
-		m.Index = 1
-		m.adjustDrawIndexes()
-	} else {
-		m.Index -= jump
-		m.adjustDrawIndexes()
-	}
-}
-
-func (m *Menu) navigateDown(jump int) {
+// Jump can be positive (move down) or negative (move up)
+func (m *Menu) navigateTo(jump int) {
 	items_count := len(m.items)
 
-	if m.Index+jump >= items_count {
+	if m.Index+jump < 1 {
+		m.Index = 1
+		m.adjustDrawIndexes()
+	} else if m.Index+jump >= items_count {
 		m.Index = items_count - 1
 		m.adjustDrawIndexes()
 	} else {
@@ -163,13 +157,13 @@ func (m *Menu) Show() {
 		if !m.handleKey(key) {
 			switch key {
 			case gc.KEY_DOWN:
-				m.navigateDown(1)
+				m.navigateTo(1)
 			case gc.KEY_UP:
-				m.navigateUp(1)
+				m.navigateTo(-1)
 			case gc.KEY_PAGEUP:
-				m.navigateUp(m.draw_index_to - m.draw_index_from + 1)
+				m.navigateTo(m.draw_index_from - m.draw_index_to - 1)
 			case gc.KEY_PAGEDOWN:
-				m.navigateDown(m.draw_index_to - m.draw_index_from + 1)
+				m.navigateTo(m.draw_index_to - m.draw_index_from + 1)
 			case gc.KEY_ESC:
 				return // close menu
 			case gc.KEY_BACKSPACE:

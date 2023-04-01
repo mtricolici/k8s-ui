@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
+	"strings"
 
 	gc "github.com/rthornton128/goncurses"
 )
@@ -16,21 +17,25 @@ type MenuResources struct {
 	ns         string
 	itemsCount int
 	wide       bool
+
+	resourceType string
 }
 
 func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 	mnu := MenuResources{
-		screen: screen,
-		k8sc:   k8s.NewK8SClient(),
-		menu:   nil,
-		ns:     namespace,
-		wide:   false,
+		screen:       screen,
+		k8sc:         k8s.NewK8SClient(),
+		menu:         nil,
+		ns:           namespace,
+		wide:         false,
+		resourceType: "pod", //default show pods in a namespace
 	}
 
 	return &mnu
 }
 
 func (m *MenuResources) Load() error {
+	//TODO: load resources according to m.resourceType
 	pods, err := m.k8sc.GetPods(m.ns, m.wide)
 	if err != nil {
 		return err
@@ -73,44 +78,50 @@ func (m *MenuResources) DrawHeader() {
 
 	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, "view:")
 	x += 5
-	showText := "pods"
-	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, x, showText)
-	x += len(showText)
-	// ncurses.AddChar(ncurses.COLOR_HEADER_HINT, 0, x, gc.ACS_BULLET)
-	// x += 1
+	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, x, m.resourceType)
+	x += len(m.resourceType)
 	ncurses.AddText(ncurses.COLOR_HEADER_HINT, 0, x, "<F2>")
 	x += 5
 
 	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, fmt.Sprintf("%d of %d", m.menu.Index, m.itemsCount))
-
-	//m.screen.MovePrintf(0, 3, " Namespace '%s' resource %d of %d ", m.ns,
-
 }
 
 func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 	switch key {
 	case 111: // key 'o' has been pressed
-		win := ncurses.MessageBoxAsync("", "Loading ...")
 		m.wide = !m.wide
-		err := m.Load()
-		win.Delete() // close 'Loading' dialog ...
-		if err != nil {
-			ncurses.MessageBox("Error", err.Error(), 1000)
-		}
+		m.reload()
 		return true
 	case gc.KEY_F5:
-		win := ncurses.MessageBoxAsync("", "reloading ...")
-		err := m.Load() // reload
-		win.Delete()    // close 'Reloading' dialog ...
-		if err != nil {
-			ncurses.MessageBox("Error", err.Error(), 1000)
-		}
+		m.reload()
 		return true
 	case gc.KEY_F2:
 		mnu := NewResourceTypesMenu(m.screen, m.ns)
 		mnu.Show()
+
+		if len(mnu.SelectedType) > 0 {
+			if mnu.SelectedType == "all" {
+				ncurses.MessageBox("Error", "ALL not implemented yet", 1000)
+			} else if strings.HasPrefix(mnu.SelectedType, "custom") {
+				ncurses.MessageBox("Error", "CUSTOM not implemented yet", 1000)
+			} else {
+				m.resourceType = mnu.SelectedType
+				m.reload()
+			}
+		}
+
 		return true
 	}
 
 	return false
+}
+
+func (m *MenuResources) reload() {
+	win := ncurses.MessageBoxAsync("", "Loading ...")
+	err := m.Load()
+	win.Delete() // close 'Loading' dialog ...
+	if err != nil {
+		ncurses.MessageBox("Error", err.Error(), 1000)
+	}
+	win.Delete() // close 'Reloading' dialog ...
 }

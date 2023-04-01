@@ -25,6 +25,8 @@ type Menu struct {
 	FuncHeader    MenuHeaderFunc
 	FuncHandleKey MenuHandleKeyFunc
 
+	CloseMenu bool
+
 	// menu position variables
 	top_left_x   int
 	top_left_y   int
@@ -41,6 +43,7 @@ type Menu struct {
 func NewMenu(screen *gc.Window, data [][]string) *Menu {
 	max_y, max_x := screen.MaxYX()
 	menu := Menu{
+		CloseMenu:     false,
 		screen:        screen,
 		data:          data,
 		items:         nil,
@@ -199,6 +202,10 @@ func (m *Menu) Show() {
 			default:
 				ncurses.MessageBox("warning", "key not bound!", 300)
 			}
+		}
+
+		if m.CloseMenu {
+			break
 		}
 	}
 }

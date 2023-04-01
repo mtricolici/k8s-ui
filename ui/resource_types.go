@@ -12,6 +12,8 @@ type MenuResourceTypes struct {
 	menu   *Menu
 
 	ns string
+
+	SelectedType string
 }
 
 func NewResourceTypesMenu(screen *gc.Window, namespace string) *MenuResourceTypes {
@@ -57,5 +59,10 @@ func (m *MenuResourceTypes) Show() {
 }
 
 func (m *MenuResourceTypes) HandleKey(key gc.Key, selectedItem *[]string) bool {
+	if key == gc.KEY_RETURN {
+		m.menu.CloseMenu = true
+		m.SelectedType = (*selectedItem)[0]
+		return true
+	}
 	return false
 }

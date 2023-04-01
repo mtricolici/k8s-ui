@@ -9,11 +9,6 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
-const (
-	top_left_x = 0 // Vertical Column
-	top_left_y = 2 // Horizontal Line
-)
-
 type (
 	MenuHeaderFunc    func()
 	MenuHandleKeyFunc func(key gc.Key, selectedItem *[]string) bool
@@ -30,14 +25,20 @@ type Menu struct {
 	FuncHeader    MenuHeaderFunc
 	FuncHandleKey MenuHandleKeyFunc
 
+	// menu position variables
+	top_left_x  int
+	top_left_y  int
+	menu_size_x int
+	menu_size_y int
+	show_header bool
+
 	// navigation variables
-	max_x           int
-	max_y           int
 	draw_index_from int
 	draw_index_to   int
 }
 
 func NewMenu(screen *gc.Window, data [][]string) *Menu {
+	max_y, max_x := screen.MaxYX()
 	menu := Menu{
 		screen:        screen,
 		data:          data,
@@ -45,9 +46,23 @@ func NewMenu(screen *gc.Window, data [][]string) *Menu {
 		Hints:         nil,
 		FuncHeader:    nil,
 		FuncHandleKey: nil,
+		// set default to full screen without 2 rows for header
+		top_left_x:  0,
+		top_left_y:  2,
+		menu_size_x: max_x,
+		menu_size_y: max_y - 2,
+		show_header: true,
 	}
 	menu.buildItems()
 	return &menu
+}
+
+func (m *Menu) SetCustomPosition(x, y, size_x, size_y int, show_header bool) {
+	m.top_left_x = x
+	m.top_left_y = y
+	m.menu_size_x = size_x
+	m.menu_size_y = size_y
+	m.show_header = show_header
 }
 
 func (m *Menu) buildItems() {
@@ -98,11 +113,15 @@ func (m *Menu) handleKey(key gc.Key) bool {
 }
 
 func (m *Menu) calcNavigationVars() {
-	m.max_y, m.max_x = m.screen.MaxYX()
 
 	m.draw_index_from = 1
 	// 3 lines are: header, shortcuts and table title
-	m.draw_index_to = m.max_y - top_left_y - 3
+
+	if m.show_header {
+		m.draw_index_to = m.menu_size_y - 3
+	} else {
+		m.draw_index_to = m.menu_size_y - 2
+	}
 
 	if m.Index < m.draw_index_from {
 		m.Index = m.draw_index_from
@@ -178,24 +197,25 @@ func (m *Menu) Show() {
 func (m *Menu) drawMenu() {
 	defer l.LogExecutedTime("drawMenu")()
 	if len(m.items) == 1 {
-		m.screen.MovePrint(top_left_y, top_left_x, m.items[0])
+		m.screen.MovePrint(m.top_left_y, m.top_left_x, m.items[0])
 		return
 	}
 
 	// 2 - 1 left border and 1 right border
-	windowHorizontalSize := m.max_x - 2 - top_left_x
+	windowHorizontalSize := m.menu_size_x - 2
 
-	x := top_left_x
-	y := top_left_y
+	x := m.top_left_x
+	y := m.top_left_y
 
 	for i, item := range m.items {
 
 		// Always print 1st row: this is TITLE
 		if i == 0 {
-			//m.screen.MovePrint(y, x+1, item)
-			ncurses.HLine(ncurses.COLOR_MENU_HEADER, y, x, ' ', windowHorizontalSize+2)
-			ncurses.AddText(ncurses.COLOR_MENU_HEADER, y, x+1, item)
-			y++ // Move to next line
+			if m.show_header {
+				ncurses.HLine(ncurses.COLOR_MENU_HEADER, y, x, ' ', windowHorizontalSize+2)
+				ncurses.AddText(ncurses.COLOR_MENU_HEADER, y, x+1, item)
+				y++ // Move to next line
+			}
 			m.drawVerticalLineTop(y, x, windowHorizontalSize)
 			y++ // Move to next line
 			continue
@@ -247,7 +267,7 @@ func (m *Menu) drawHints() {
 	x := 1
 	y := 1
 
-	ncurses.HLine(ncurses.COLOR_HINTS_TEXT, y, 0, ' ', m.max_x)
+	ncurses.HLine(ncurses.COLOR_HINTS_TEXT, y, m.top_left_x, ' ', m.menu_size_x)
 
 	for _, hint := range m.Hints {
 		ncurses.AddText(ncurses.COLOR_HINTS_SHORTCUT, y, x, hint[1])

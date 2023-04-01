@@ -7,18 +7,18 @@ import (
 	gc "github.com/rthornton128/goncurses"
 )
 
-type MenuPods struct {
+type MenuResources struct {
 	screen *gc.Window
 	k8sc   *k8s.K8SClient
 	menu   *Menu
 
-	ns        string
-	podsCount int
-	wide      bool
+	ns         string
+	itemsCount int
+	wide       bool
 }
 
-func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
-	mnu := MenuPods{
+func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
+	mnu := MenuResources{
 		screen: screen,
 		k8sc:   k8s.NewK8SClient(),
 		menu:   nil,
@@ -29,13 +29,13 @@ func NewMenuPods(screen *gc.Window, namespace string) *MenuPods {
 	return &mnu
 }
 
-func (m *MenuPods) Load() error {
+func (m *MenuResources) Load() error {
 	pods, err := m.k8sc.GetPods(m.ns, m.wide)
 	if err != nil {
 		return err
 	}
 
-	m.podsCount = len(pods) - 1 // 1st is header
+	m.itemsCount = len(pods) - 1 // 1st is header
 	if m.menu == nil {
 		m.menu = NewMenu(m.screen, pods)
 		m.menu.FuncHeader = m.DrawHeader
@@ -57,19 +57,19 @@ func (m *MenuPods) Load() error {
 	return nil
 }
 
-func (m *MenuPods) Show() {
+func (m *MenuResources) Show() {
 	m.menu.Show()
 }
 
-func (m *MenuPods) DrawHeader() {
+func (m *MenuResources) DrawHeader() {
 	_, maxy := m.screen.MaxYX()
 	m.screen.ColorOn(ncurses.COLOR_HEADER)
 	m.screen.HLine(0, 0, gc.ACS_HLINE, maxy)
-	m.screen.MovePrintf(0, 3, " Namespace '%s' pods: %d of %d ", m.ns, m.menu.Index, m.podsCount)
+	m.screen.MovePrintf(0, 3, " Namespace '%s' resource %d of %d ", m.ns, m.menu.Index, m.itemsCount)
 	m.screen.ColorOff(ncurses.COLOR_HEADER)
 }
 
-func (m *MenuPods) HandleKey(key gc.Key, selectedItem *[]string) bool {
+func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 	switch key {
 	case 111: // key 'o' has been pressed
 		win := ncurses.MessageBoxAsync("", "Loading ...")

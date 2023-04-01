@@ -50,7 +50,7 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 
 	if key == gc.KEY_RETURN {
 		ns := (*selectedItem)[0] // Column 0 is ns name (we don't need other columns here)
-		podsMenu := NewMenuPods(m.screen, ns)
+		podsMenu := NewResourcesMenu(m.screen, ns)
 		err := podsMenu.Load()
 		if err != nil {
 			ncurses.MessageBox("error", err.Error(), 1000)

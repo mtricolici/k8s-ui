@@ -108,6 +108,7 @@ func (m *Menu) buildItems() {
 func (m *Menu) Reload(newData [][]string) {
 	m.data = newData
 	m.buildItems()
+	m.navigateTo(0)
 }
 
 func (m *Menu) handleKey(key gc.Key) bool {

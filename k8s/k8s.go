@@ -53,3 +53,14 @@ func (client *K8SClient) GetPods(ns string, wide bool) ([][]string, error) {
 	}
 	return client.exec(args)
 }
+
+func (client *K8SClient) GetResources(ns, resource string, wide bool) ([][]string, error) {
+	args := []string{
+		"get", resource, "-n", ns, "--sort-by", ".metadata.name",
+	}
+
+	if wide {
+		args = append(args, "-o", "wide")
+	}
+	return client.exec(args)
+}

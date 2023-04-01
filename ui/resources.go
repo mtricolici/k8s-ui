@@ -27,7 +27,7 @@ func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 		k8sc:         k8s.NewK8SClient(),
 		menu:         nil,
 		ns:           namespace,
-		wide:         false,
+		wide:         true,
 		resourceType: "pod", //default show pods in a namespace
 	}
 
@@ -35,15 +35,14 @@ func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 }
 
 func (m *MenuResources) Load() error {
-	//TODO: load resources according to m.resourceType
-	pods, err := m.k8sc.GetPods(m.ns, m.wide)
+	resources, err := m.k8sc.GetResources(m.ns, m.resourceType, m.wide)
 	if err != nil {
 		return err
 	}
 
-	m.itemsCount = len(pods) - 1 // 1st is header
+	m.itemsCount = len(resources) - 1 // 1st is header
 	if m.menu == nil {
-		m.menu = NewMenu(m.screen, pods)
+		m.menu = NewMenu(m.screen, resources)
 		m.menu.FuncHeader = m.DrawHeader
 		m.menu.FuncHandleKey = m.HandleKey
 
@@ -58,7 +57,7 @@ func (m *MenuResources) Load() error {
 			{"Refresh", "F5"},
 		}
 	} else {
-		m.menu.Reload(pods)
+		m.menu.Reload(resources)
 	}
 
 	return nil

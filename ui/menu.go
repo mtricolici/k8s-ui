@@ -98,7 +98,7 @@ func (m *Menu) Show() {
 	screen_max_lines, _ := m.screen.MaxYX()
 
 	initial_index_from := 1
-	initial_index_to := screen_max_lines - top_left_y - 10
+	initial_index_to := screen_max_lines - top_left_y - 3 // 3 lines are: header, shortcuts and table title
 
 	drawIndexFrom := initial_index_from
 	drawIndexTo := initial_index_to

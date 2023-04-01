@@ -113,21 +113,25 @@ func (m *Menu) calcNavigationVars() {
 	}
 }
 
+func (m *Menu) adjustDrawIndexes() {
+	if m.Index < m.draw_index_from {
+		delta := m.draw_index_from - m.Index
+		m.draw_index_from -= delta
+		m.draw_index_to -= delta
+	} else if m.Index > m.draw_index_to {
+		delta := m.Index - m.draw_index_to
+		m.draw_index_from += delta
+		m.draw_index_to += delta
+	}
+}
+
 func (m *Menu) navigateUp(jump int) {
 	if m.Index-jump < 1 {
 		m.Index = 1
-		if m.Index < m.draw_index_from {
-			delta := m.draw_index_from - m.Index
-			m.draw_index_from -= delta
-			m.draw_index_to -= delta
-		}
+		m.adjustDrawIndexes()
 	} else {
 		m.Index -= jump
-		if m.Index < m.draw_index_from {
-			delta := m.draw_index_from - m.Index
-			m.draw_index_from -= delta
-			m.draw_index_to -= delta
-		}
+		m.adjustDrawIndexes()
 	}
 }
 
@@ -136,19 +140,10 @@ func (m *Menu) navigateDown(jump int) {
 
 	if m.Index+jump >= items_count {
 		m.Index = items_count - 1
-		if m.Index > m.draw_index_to {
-			delta := m.Index - m.draw_index_to
-			m.draw_index_from += delta
-			m.draw_index_to += delta
-		}
-
+		m.adjustDrawIndexes()
 	} else {
 		m.Index += jump
-		if m.Index > m.draw_index_to {
-			delta := m.Index - m.draw_index_to
-			m.draw_index_from += delta
-			m.draw_index_to += delta
-		}
+		m.adjustDrawIndexes()
 	}
 }
 

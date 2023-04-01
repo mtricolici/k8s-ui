@@ -113,6 +113,45 @@ func (m *Menu) calcNavigationVars() {
 	}
 }
 
+func (m *Menu) navigateUp(jump int) {
+	if m.Index-jump < 1 {
+		m.Index = 1
+		if m.Index < m.draw_index_from {
+			delta := m.draw_index_from - m.Index
+			m.draw_index_from -= delta
+			m.draw_index_to -= delta
+		}
+	} else {
+		m.Index -= jump
+		if m.Index < m.draw_index_from {
+			delta := m.draw_index_from - m.Index
+			m.draw_index_from -= delta
+			m.draw_index_to -= delta
+		}
+	}
+}
+
+func (m *Menu) navigateDown(jump int) {
+	items_count := len(m.items)
+
+	if m.Index+jump >= items_count {
+		m.Index = items_count - 1
+		if m.Index > m.draw_index_to {
+			delta := m.Index - m.draw_index_to
+			m.draw_index_from += delta
+			m.draw_index_to += delta
+		}
+
+	} else {
+		m.Index += jump
+		if m.Index > m.draw_index_to {
+			delta := m.Index - m.draw_index_to
+			m.draw_index_from += delta
+			m.draw_index_to += delta
+		}
+	}
+}
+
 func (m *Menu) Show() {
 	m.Index = 1
 	m.calcNavigationVars()
@@ -129,23 +168,13 @@ func (m *Menu) Show() {
 		if !m.handleKey(key) {
 			switch key {
 			case gc.KEY_DOWN:
-				m.Index++
-				if m.Index >= len(m.items) {
-					m.Index = len(m.items) - 1
-				}
-				if m.Index > m.draw_index_to {
-					m.draw_index_from += 1
-					m.draw_index_to += 1
-				}
+				m.navigateDown(1)
 			case gc.KEY_UP:
-				m.Index--
-				if m.Index < 1 {
-					m.Index = 1
-				}
-				if m.Index < m.draw_index_from {
-					m.draw_index_from -= 1
-					m.draw_index_to -= 1
-				}
+				m.navigateUp(1)
+			case gc.KEY_PAGEUP:
+				m.navigateUp(m.draw_index_to - m.draw_index_from + 1)
+			case gc.KEY_PAGEDOWN:
+				m.navigateDown(m.draw_index_to - m.draw_index_from + 1)
 			case gc.KEY_ESC:
 				return // close menu
 			case gc.KEY_BACKSPACE:

@@ -250,9 +250,10 @@ func (m *Menu) drawHints() {
 	ncurses.HLine(ncurses.COLOR_HINTS_TEXT, y, 0, ' ', m.max_x)
 
 	for _, hint := range m.Hints {
-		ncurses.AddText(ncurses.COLOR_HINTS_TEXT, y, x, hint[0])
-		x += len(hint[0]) + 1
 		ncurses.AddText(ncurses.COLOR_HINTS_SHORTCUT, y, x, hint[1])
-		x += len(hint[1]) + 2
+		x += len(hint[1]) + 1
+		ncurses.AddChar(ncurses.COLOR_HINTS_SHORTCUT, y, x-1, gc.ACS_BULLET)
+		ncurses.AddText(ncurses.COLOR_HINTS_TEXT, y, x, hint[0])
+		x += len(hint[0]) + 2
 	}
 }

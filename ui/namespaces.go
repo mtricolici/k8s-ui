@@ -24,14 +24,28 @@ func NewMenuNamespaces(screen *gc.Window) *MenuNamespaces {
 	return &mnu
 }
 
-func (m *MenuNamespaces) Load() {
-	//TODO: handle errors here
-	namespaces, _ := m.k8sc.GetNamespaces()
+func (m *MenuNamespaces) Load() error {
+	namespaces, err := m.k8sc.GetNamespaces()
+	if err != nil {
+		return err
+	}
 
 	m.namespacesCount = len(namespaces) - 1 // 1st is header
-	m.menu = NewMenu(m.screen, namespaces)
-	m.menu.FuncHeader = m.DrawHeader
-	m.menu.FuncHandleKey = m.HandleKey
+	if m.menu == nil {
+		m.menu = NewMenu(m.screen, namespaces)
+		m.menu.FuncHeader = m.DrawHeader
+		m.menu.FuncHandleKey = m.HandleKey
+		m.menu.Hints = [][]string{
+			{"Exit", "ESC"},
+			{"Describe", "d"},
+			{"Filter", "F3"},
+			{"Refresh", "F5"},
+		}
+	} else {
+		m.menu.Reload(namespaces)
+	}
+
+	return nil
 }
 
 func (m *MenuNamespaces) Show() {
@@ -48,7 +62,8 @@ func (m *MenuNamespaces) DrawHeader() {
 
 func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 
-	if key == gc.KEY_RETURN {
+	switch key {
+	case gc.KEY_RETURN:
 		ns := (*selectedItem)[0] // Column 0 is ns name (we don't need other columns here)
 		podsMenu := NewResourcesMenu(m.screen, ns)
 		err := podsMenu.Load()
@@ -59,6 +74,16 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		}
 
 		return true
+
+	case gc.KEY_F5:
+		win := ncurses.MessageBoxAsync("", "reloading ...")
+		err := m.Load() // reload
+		win.Delete()    // close 'Reloading' dialog ...
+		if err != nil {
+			ncurses.MessageBox("Error", err.Error(), 1000)
+		}
+		return true
 	}
+
 	return false
 }

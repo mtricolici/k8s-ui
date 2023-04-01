@@ -14,6 +14,10 @@ func main() {
 	defer ncurses.Done()
 
 	menu := ui.NewMenuNamespaces(screen)
-	menu.Load()
-	menu.Show()
+	err := menu.Load()
+	if err != nil {
+		ncurses.MessageBox("Error", err.Error(), 2000)
+	} else {
+		menu.Show()
+	}
 }

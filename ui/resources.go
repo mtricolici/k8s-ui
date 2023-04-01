@@ -42,13 +42,14 @@ func (m *MenuResources) Load() error {
 		m.menu.FuncHandleKey = m.HandleKey
 
 		m.menu.Hints = [][]string{
-			{"wide", "o"},
-			{"logs", "l"},
-			{"prev logs", "p"},
-			{"describe", "d"},
-			{"exec", "e"},
-			{"filter", "F3"},
-			{"refresh", "F5"},
+			{"Back", "ESC"},
+			{"Wide", "o"},
+			{"Logs", "l"},
+			{"Prev.logs", "p"},
+			{"Describe", "d"},
+			{"Exec", "e"},
+			{"Filter", "F3"},
+			{"Refresh", "F5"},
 		}
 	} else {
 		m.menu.Reload(pods)

@@ -179,5 +179,4 @@ func (m *MenuResources) reload() {
 	if err != nil {
 		ncurses.MessageBox("Error", err.Error(), 1000)
 	}
-	win.Delete() // close 'Reloading' dialog ...
 }

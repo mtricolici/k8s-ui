@@ -109,10 +109,24 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 			}
 		}
 		return true
-	case 100: // character 'd'
+	case 100: // character 'd' - describe resource
 		if selectedItem != nil {
 			name := (*selectedItem)[0]
 			cmd := fmt.Sprintf("kubectl describe %s %s -n %s | less -S", m.resourceType, name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
+	case 108: // character 'l' - view logs (valid for 'pods' only)
+		if selectedItem != nil && m.resourceType == "pod" {
+			name := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl logs %s -n %s | less -S", name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
+	case 112: // character 'p' - view previous logs (valid for 'pods' only)
+		if selectedItem != nil && m.resourceType == "pod" {
+			name := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl logs -p %s -n %s | less -S", name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true

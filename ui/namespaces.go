@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
 
@@ -81,6 +82,13 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		win.Delete()    // close 'Reloading' dialog ...
 		if err != nil {
 			ncurses.MessageBox("Error", err.Error(), 1000)
+		}
+		return true
+	case 100: // character 'd'
+		if selectedItem != nil {
+			ns := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl describe ns %s | less -S", ns)
+			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	}

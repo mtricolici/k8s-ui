@@ -108,7 +108,13 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 				m.reload()
 			}
 		}
-
+		return true
+	case 100: // character 'd'
+		if selectedItem != nil {
+			name := (*selectedItem)[0]
+			cmd := fmt.Sprintf("kubectl describe %s %s -n %s | less -S", m.resourceType, name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
 		return true
 	}
 

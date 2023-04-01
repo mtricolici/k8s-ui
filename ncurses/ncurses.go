@@ -85,6 +85,12 @@ func AddText(color int16, y, x int, text string) {
 	screen.ColorOff(color)
 }
 
+func AddTextMaxWidth(color int16, y, x, max_width int, text string) {
+	screen.ColorOn(color)
+	screen.MovePrint(y, x, shortString(text, max_width))
+	screen.ColorOff(color)
+}
+
 func HLine(color int16, y, x int, ach gc.Char, width int) {
 	screen.ColorOn(color)
 	screen.HLine(y, x, ach, width)

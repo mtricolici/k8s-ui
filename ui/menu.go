@@ -226,7 +226,7 @@ func (m *Menu) drawMenu() {
 		if i == 0 {
 			if m.show_header {
 				ncurses.HLine(ncurses.COLOR_MENU_HEADER, y, x, ' ', windowHorizontalSize+2)
-				ncurses.AddText(ncurses.COLOR_MENU_HEADER, y, x+1, item)
+				ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_HEADER, y, x+1, windowHorizontalSize, item)
 				y++ // Move to next line
 			}
 			m.drawVerticalLineTop(y, x, windowHorizontalSize)
@@ -242,10 +242,10 @@ func (m *Menu) drawMenu() {
 
 		if i == m.Index {
 			ncurses.HLine(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, ' ', windowHorizontalSize)
-			ncurses.AddText(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, item)
+			ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, windowHorizontalSize, item)
 		} else {
 			ncurses.HLine(ncurses.COLOR_MENU_ITEM, y, x+1, ' ', windowHorizontalSize)
-			ncurses.AddText(ncurses.COLOR_MENU_ITEM, y, x+1, item)
+			ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_ITEM, y, x+1, windowHorizontalSize, item)
 		}
 
 		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+windowHorizontalSize+1, gc.ACS_VLINE)

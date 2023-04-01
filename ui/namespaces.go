@@ -62,17 +62,18 @@ func (m *MenuNamespaces) DrawHeader() {
 	m.screen.ColorOff(ncurses.COLOR_HEADER)
 }
 
-func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
-
+func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *string) bool {
 	switch key {
 	case gc.KEY_RETURN:
-		ns := (*selectedItem)[0] // Column 0 is ns name (we don't need other columns here)
-		podsMenu := NewResourcesMenu(m.screen, ns)
-		err := podsMenu.Load()
-		if err != nil {
-			ncurses.MessageBox("error", err.Error(), 1000)
-		} else {
-			podsMenu.Show()
+		if selectedItem != nil {
+			ns := (*selectedItem) // Column 0 is ns name (we don't need other columns here)
+			podsMenu := NewResourcesMenu(m.screen, ns)
+			err := podsMenu.Load()
+			if err != nil {
+				ncurses.MessageBox("error", err.Error(), 1000)
+			} else {
+				podsMenu.Show()
+			}
 		}
 
 		return true
@@ -87,14 +88,14 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		return true
 	case 100: // character 'd'
 		if selectedItem != nil {
-			ns := (*selectedItem)[0]
+			ns := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl describe ns %s | less -S", ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case gc.KEY_F4:
 		if selectedItem != nil {
-			ns := (*selectedItem)[0]
+			ns := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl edit ns %s", ns)
 			ncurses.ExecuteCommand(cmd)
 		}

@@ -4,18 +4,23 @@ import (
 	"fmt"
 
 	"k8s_ui/ncurses"
+	"k8s_ui/utils"
 
 	gc "github.com/rthornton128/goncurses"
 )
 
+const (
+	max_name_size = 30
+)
+
 type (
 	MenuHeaderFunc    func()
-	MenuHandleKeyFunc func(key gc.Key, selectedItem *[]string) bool
+	MenuHandleKeyFunc func(key gc.Key, selectedItem *string) bool
 )
 
 type Menu struct {
 	screen *gc.Window
-	data   [][]string
+	names  []string
 	items  []string
 
 	Hints [][]string
@@ -44,7 +49,6 @@ func NewMenu(screen *gc.Window, data [][]string) *Menu {
 	menu := Menu{
 		CloseMenu:     false,
 		screen:        screen,
-		data:          data,
 		items:         nil,
 		Hints:         nil,
 		FuncHeader:    nil,
@@ -57,7 +61,7 @@ func NewMenu(screen *gc.Window, data [][]string) *Menu {
 		show_header:  true,
 		erase_screen: true,
 	}
-	menu.buildItems()
+	menu.buildItems(data)
 	return &menu
 }
 
@@ -70,11 +74,18 @@ func (m *Menu) SetCustomPosition(x, y, size_x, size_y int, show_header bool) {
 	m.erase_screen = false
 }
 
-func (m *Menu) buildItems() {
-	m.items = make([]string, len(m.data))
-	max := make([]int, len(m.data[0]))
+func (m *Menu) buildItems(data [][]string) {
+	m.items = make([]string, len(data))
+	m.names = make([]string, len(data))
+	max := make([]int, len(data[0]))
 
-	for _, line := range m.data {
+	// make names shorter!
+	for i := range data {
+		m.names[i] = data[i][0]
+		data[i][0] = utils.ShortString(data[i][0], max_name_size)
+	}
+
+	for _, line := range data {
 		for col, colValue := range line {
 			if max[col] < len(colValue) {
 				max[col] = len(colValue)
@@ -82,11 +93,11 @@ func (m *Menu) buildItems() {
 		}
 	}
 
-	for i, line := range m.data {
+	for i, line := range data {
 		m.items[i] = ""
 
 		for col, colValue := range line {
-			if columnRightAlign(m.data[0][col]) {
+			if columnRightAlign(data[0][col]) {
 				format := fmt.Sprintf("%s%d%s ", "%", max[col], "s")
 				m.items[i] += fmt.Sprintf(format, colValue)
 			} else {
@@ -103,14 +114,13 @@ func (m *Menu) buildItems() {
 }
 
 func (m *Menu) Reload(newData [][]string) {
-	m.data = newData
-	m.buildItems()
+	m.buildItems(newData)
 	m.navigateTo(0)
 }
 
 func (m *Menu) handleKey(key gc.Key) bool {
-	if m.Index > 0 && m.Index < len(m.data) {
-		return m.FuncHandleKey(key, &m.data[m.Index])
+	if m.Index > 0 && m.Index < len(m.names) {
+		return m.FuncHandleKey(key, &m.names[m.Index])
 	}
 
 	return m.FuncHandleKey(key, nil)

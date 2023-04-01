@@ -58,10 +58,12 @@ func (m *MenuResourceTypes) Show() {
 	m.menu.Show()
 }
 
-func (m *MenuResourceTypes) HandleKey(key gc.Key, selectedItem *[]string) bool {
+func (m *MenuResourceTypes) HandleKey(key gc.Key, selectedItem *string) bool {
 	if key == gc.KEY_RETURN {
 		m.menu.CloseMenu = true
-		m.SelectedType = (*selectedItem)[0]
+		if selectedItem != nil {
+			m.SelectedType = (*selectedItem)
+		}
 		return true
 	}
 	return false

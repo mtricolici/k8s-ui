@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
+	"k8s_ui/utils"
 	"strings"
 
 	gc "github.com/rthornton128/goncurses"
@@ -73,8 +74,9 @@ func (m *MenuResources) DrawHeader() {
 
 	ncurses.HLine(ncurses.COLOR_HEADER, 0, 0, ' ', maxy)
 	ncurses.AddText(ncurses.COLOR_HEADER, 0, 1, "Namespace:")
-	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, 11, m.ns)
-	x := 12 + len(m.ns)
+	shortName := utils.ShortString(m.ns, max_name_size)
+	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, 11, shortName)
+	x := 12 + len(shortName)
 
 	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, "view:")
 	x += 5
@@ -86,7 +88,7 @@ func (m *MenuResources) DrawHeader() {
 	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, fmt.Sprintf("%d of %d", m.menu.Index, m.itemsCount))
 }
 
-func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
+func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 	switch key {
 	case 111: // key 'o' has been pressed
 		m.wide = !m.wide
@@ -112,35 +114,35 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *[]string) bool {
 		return true
 	case 100: // character 'd' - describe resource
 		if selectedItem != nil {
-			name := (*selectedItem)[0]
+			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl describe %s %s -n %s | less -S", m.resourceType, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case 108: // character 'l' - view logs (valid for 'pods' only)
 		if selectedItem != nil && m.resourceType == "pod" {
-			name := (*selectedItem)[0]
+			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl logs %s -n %s | less -S", name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case 112: // character 'p' - view previous logs (valid for 'pods' only)
 		if selectedItem != nil && m.resourceType == "pod" {
-			name := (*selectedItem)[0]
+			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl logs -p %s -n %s | less -S", name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case 101: // character 'e' - execute a shell inside container
 		if selectedItem != nil && m.resourceType == "pod" {
-			name := (*selectedItem)[0]
+			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl exec -it %s -n %s -- sh", name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case gc.KEY_F4:
 		if selectedItem != nil {
-			name := (*selectedItem)[0]
+			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl edit %s %s -n %s", m.resourceType, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}

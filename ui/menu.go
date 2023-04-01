@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 
-	l "k8s_ui/logger"
 	"k8s_ui/ncurses"
 
 	gc "github.com/rthornton128/goncurses"
@@ -72,8 +71,6 @@ func (m *Menu) SetCustomPosition(x, y, size_x, size_y int, show_header bool) {
 }
 
 func (m *Menu) buildItems() {
-	defer l.LogExecutedTime("Menu.buildItems")()
-
 	m.items = make([]string, len(m.data))
 	max := make([]int, len(m.data[0]))
 
@@ -212,7 +209,6 @@ func (m *Menu) Show() {
 }
 
 func (m *Menu) drawMenu() {
-	defer l.LogExecutedTime("drawMenu")()
 	if len(m.items) == 1 {
 		m.screen.MovePrint(m.top_left_y, m.top_left_x, m.items[0])
 		return

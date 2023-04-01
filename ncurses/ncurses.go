@@ -2,6 +2,7 @@ package ncurses
 
 import (
 	"fmt"
+	"k8s_ui/utils"
 	"log"
 	"os"
 	"os/exec"
@@ -87,7 +88,7 @@ func AddText(color int16, y, x int, text string) {
 
 func AddTextMaxWidth(color int16, y, x, max_width int, text string) {
 	screen.ColorOn(color)
-	screen.MovePrint(y, x, shortString(text, max_width))
+	screen.MovePrint(y, x, utils.ShortString(text, max_width))
 	screen.ColorOff(color)
 }
 

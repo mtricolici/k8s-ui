@@ -1,6 +1,6 @@
-package ncurses
+package utils
 
-func shortString(str string, max int) string {
+func ShortString(str string, max int) string {
 	slen := len(str)
 	if slen <= max {
 		return str

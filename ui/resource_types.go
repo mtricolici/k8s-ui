@@ -28,20 +28,22 @@ func (m *MenuResourceTypes) load() {
 	data := [][]string{
 		{""},
 		{"all"},
-		{"pod"},
-		{"service"},
-		{"deployment"},
-		{"ingress"},
+		{"Pod"},
+		{"Service"},
+		{"Deployment"},
+		{"Ingress"},
 		{"pvc"},
-		{"daemonset"},
-		{"replicaset"},
-		{"statefulset"},
+		{"DaemonSet"},
+		{"ReplicaSet"},
+		{"StatefulSet"},
+		{"Endpoint"},
+		{"HorizontalPodAutoscaler"},
 		{"custom ..."},
 	}
 	m.menu = NewMenu(m.screen, data)
 	m.menu.FuncHandleKey = m.HandleKey
 
-	size_x := 16
+	size_x := 30
 	size_y := 16
 
 	x := 20

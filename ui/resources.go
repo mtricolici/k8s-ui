@@ -27,7 +27,7 @@ func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 		menu:         nil,
 		ns:           namespace,
 		wide:         false,
-		resourceType: "pod", //default show pods in a namespace
+		resourceType: "Pod", //default show pods in a namespace
 	}
 
 	return &mnu

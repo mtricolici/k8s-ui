@@ -15,21 +15,22 @@ func GetPodContainerNames(ns, pod string) ([]string, error) {
 
 func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	switch resource {
-	case "pod":
+	case "Pod":
 		return query.Pods(ns, wide)
-	case "service":
+	case "Service":
 		return query.Services(ns, wide)
-	case "deployment":
+	case "Deployment":
 		return query.Deployments(ns, wide)
-	case "ingress":
+	case "Ingress":
 		return query.Ingresses(ns, wide)
 	case "pvc":
 		return query.PersistentVolumeClaims(ns, wide)
-	case "daemonset":
-	case "replicaset":
-	case "statefulset":
+	case "DaemonSet":
+	case "ReplicaSet":
+	case "StatefulSet":
 		return query.StatefulSets(ns, wide)
-	case "all":
+	case "Endpoint":
+	case "HorizontalPodAutoscaler":
 	}
 
 	return nil, fmt.Errorf("get resource '%s' not implemented yet", resource)

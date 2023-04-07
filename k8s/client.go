@@ -17,6 +17,8 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	switch resource {
 	case "pod":
 		return query.Pods(ns, wide)
+	case "service":
+		return query.Services(ns, wide)
 	}
 
 	return nil, fmt.Errorf("get resource '%s' not implemented yet", resource)

@@ -121,7 +121,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 		return true
 	case 108: // character 'l' - view logs (valid for 'pods' only)
-		if selectedItem != nil && m.resourceType == "pod" {
+		if selectedItem != nil && m.resourceType == "Pod" {
 			pod := (*selectedItem)
 			container := m.chooseContainer("Logs for ?", pod)
 			if len(container) > 0 {
@@ -131,7 +131,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 		return true
 	case 112: // character 'p' - view previous logs (valid for 'pods' only)
-		if selectedItem != nil && m.resourceType == "pod" {
+		if selectedItem != nil && m.resourceType == "Pod" {
 			pod := (*selectedItem)
 			container := m.chooseContainer("Logs for ?", pod)
 			if len(container) > 0 {
@@ -141,7 +141,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 		return true
 	case 101: // character 'e' - execute a shell inside container
-		if selectedItem != nil && m.resourceType == "pod" {
+		if selectedItem != nil && m.resourceType == "Pod" {
 
 			pod := (*selectedItem)
 			container := m.chooseContainer("Execute where ?", pod)

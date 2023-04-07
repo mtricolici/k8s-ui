@@ -24,6 +24,7 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	case "ingress":
 		return query.Ingresses(ns, wide)
 	case "pvc":
+		return query.PersistentVolumeClaims(ns, wide)
 	case "daemonset":
 	case "replicaset":
 	case "statefulset":

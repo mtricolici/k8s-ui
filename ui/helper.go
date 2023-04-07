@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
 )
 
@@ -15,7 +16,7 @@ func columnRightAlign(column string) bool {
 }
 
 func (m *MenuResources) chooseContainer(title string, podName string) string {
-	containers, err := m.k8sc.GetPodContainerNames(m.ns, podName)
+	containers, err := k8s.GetPodContainerNames(m.ns, podName)
 	if err != nil {
 		ncurses.MessageBox("Error", err.Error(), 1000)
 		return ""

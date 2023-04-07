@@ -5,12 +5,16 @@ import (
 	"k8s_ui/utils"
 
 	v1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/kubernetes"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func Namespaces(client *kubernetes.Clientset) ([][]string, error) {
+func Namespaces() ([][]string, error) {
+	client, err := getClient()
+	if err != nil {
+		return nil, err
+	}
+
 	ns_list, err := client.CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err

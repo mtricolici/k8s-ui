@@ -10,7 +10,6 @@ import (
 
 type MenuNamespaces struct {
 	screen *gc.Window
-	client *k8s.KubernetesClient
 	menu   *Menu
 
 	namespacesCount int
@@ -19,14 +18,13 @@ type MenuNamespaces struct {
 func NewMenuNamespaces(screen *gc.Window) *MenuNamespaces {
 	mnu := MenuNamespaces{
 		screen: screen,
-		client: k8s.NewKubernetesClient(),
 		menu:   nil,
 	}
 	return &mnu
 }
 
 func (m *MenuNamespaces) Load() error {
-	namespaces, err := m.client.GetNamespaces()
+	namespaces, err := k8s.GetNamespaces()
 	if err != nil {
 		return err
 	}

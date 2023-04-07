@@ -31,14 +31,14 @@ func Deployments(ns string, wide bool) ([][]string, error) {
 	for _, deployment := range deployments.Items {
 		row := make([]string, len(header))
 		row[0] = deployment.Name
-		row[1] = deployment_ready(deployment)
-		row[2] = deployment_up_to_date(deployment)
-		row[3] = deployment_available(deployment)
+		row[1] = deployment_ready(&deployment)
+		row[2] = deployment_up_to_date(&deployment)
+		row[3] = deployment_available(&deployment)
 		row[4] = utils.HumanElapsedTime(deployment.CreationTimestamp.Time)
 		if wide {
-			row[5] = deployment_containers(deployment)
-			row[6] = deployment_images(deployment)
-			row[7] = deployment_selectors(deployment)
+			row[5] = deployment_containers(&deployment)
+			row[6] = deployment_images(&deployment)
+			row[7] = deployment_selectors(&deployment)
 		}
 		data = append(data, row)
 	}
@@ -46,19 +46,19 @@ func Deployments(ns string, wide bool) ([][]string, error) {
 	return data, nil
 }
 
-func deployment_ready(d v1.Deployment) string {
+func deployment_ready(d *v1.Deployment) string {
 	return fmt.Sprintf("%d/%d", d.Status.ReadyReplicas, d.Status.Replicas)
 }
 
-func deployment_up_to_date(d v1.Deployment) string {
+func deployment_up_to_date(d *v1.Deployment) string {
 	return fmt.Sprintf("%d", d.Status.UpdatedReplicas)
 }
 
-func deployment_available(d v1.Deployment) string {
+func deployment_available(d *v1.Deployment) string {
 	return fmt.Sprintf("%d", d.Status.AvailableReplicas)
 }
 
-func deployment_containers(d v1.Deployment) string {
+func deployment_containers(d *v1.Deployment) string {
 	names := []string{}
 
 	for _, container := range d.Spec.Template.Spec.Containers {
@@ -68,7 +68,7 @@ func deployment_containers(d v1.Deployment) string {
 	return strings.Join(names, ",")
 }
 
-func deployment_images(d v1.Deployment) string {
+func deployment_images(d *v1.Deployment) string {
 	images := []string{}
 
 	for _, container := range d.Spec.Template.Spec.Containers {
@@ -78,7 +78,7 @@ func deployment_images(d v1.Deployment) string {
 	return strings.Join(images, ",")
 }
 
-func deployment_selectors(d v1.Deployment) string {
+func deployment_selectors(d *v1.Deployment) string {
 	if d.Spec.Selector == nil {
 		return ""
 	}

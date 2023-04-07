@@ -35,11 +35,11 @@ func Services(ns string, wide bool) ([][]string, error) {
 		row[0] = svc.Name
 		row[1] = string(svc.Spec.Type)
 		row[2] = svc.Spec.ClusterIP
-		row[3] = svc_external_ips(svc)
-		row[4] = svc_ports(svc)
+		row[3] = svc_external_ips(&svc)
+		row[4] = svc_ports(&svc)
 		row[5] = utils.HumanElapsedTime(svc.CreationTimestamp.Time)
 		if wide {
-			row[6] = svc_selectors(svc)
+			row[6] = svc_selectors(&svc)
 		}
 		data = append(data, row)
 	}
@@ -47,7 +47,7 @@ func Services(ns string, wide bool) ([][]string, error) {
 	return data, nil
 }
 
-func svc_external_ips(svc v1.Service) string {
+func svc_external_ips(svc *v1.Service) string {
 	if len(svc.Spec.ExternalIPs) > 0 {
 		return strings.Join(svc.Spec.ExternalIPs, ",")
 	}
@@ -55,7 +55,7 @@ func svc_external_ips(svc v1.Service) string {
 	return "<none>"
 }
 
-func svc_ports(svc v1.Service) string {
+func svc_ports(svc *v1.Service) string {
 	ports := []string{}
 
 	for _, port := range svc.Spec.Ports {
@@ -69,7 +69,7 @@ func svc_ports(svc v1.Service) string {
 	return strings.Join(ports, ",")
 }
 
-func svc_selectors(svc v1.Service) string {
+func svc_selectors(svc *v1.Service) string {
 	selectors := []string{}
 	for k, v := range svc.Spec.Selector {
 		selectors = append(selectors, k+"="+v)

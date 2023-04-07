@@ -12,7 +12,6 @@ import (
 
 type MenuResources struct {
 	screen *gc.Window
-	k8sc   *k8s.K8SClient
 	menu   *Menu
 
 	ns         string
@@ -25,7 +24,6 @@ type MenuResources struct {
 func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 	mnu := MenuResources{
 		screen:       screen,
-		k8sc:         k8s.NewK8SClient(),
 		menu:         nil,
 		ns:           namespace,
 		wide:         false,
@@ -36,7 +34,7 @@ func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 }
 
 func (m *MenuResources) Load() error {
-	resources, err := m.k8sc.GetResources(m.ns, m.resourceType, m.wide)
+	resources, err := k8s.GetResources(m.ns, m.resourceType, m.wide)
 	if err != nil {
 		return err
 	}

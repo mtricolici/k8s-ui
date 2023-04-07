@@ -1,14 +1,11 @@
 package ui
 
 import (
-	"k8s_ui/k8s"
-
 	gc "github.com/rthornton128/goncurses"
 )
 
 type MenuResourceTypes struct {
 	screen *gc.Window
-	k8sc   *k8s.K8SClient
 	menu   *Menu
 
 	ns string
@@ -20,7 +17,6 @@ func NewResourceTypesMenu(screen *gc.Window, namespace string) *MenuResourceType
 
 	mnu := MenuResourceTypes{
 		screen: screen,
-		k8sc:   k8s.NewK8SClient(),
 		menu:   nil,
 		ns:     namespace,
 	}

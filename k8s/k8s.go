@@ -42,19 +42,6 @@ func (client *K8SClient) exec(args []string) ([][]string, error) {
 	return result[:], nil
 }
 
-func (client *K8SClient) GetNamespaces() ([][]string, error) {
-	return client.exec(client.get_namespaces)
-}
-
-func (client *K8SClient) GetPods(ns string, wide bool) ([][]string, error) {
-	args := client.get_pods
-	args = append(args, "-n", ns)
-	if wide {
-		args = append(args, "-o", "wide")
-	}
-	return client.exec(args)
-}
-
 func (client *K8SClient) GetResources(ns, resource string, wide bool) ([][]string, error) {
 	args := []string{
 		"get", resource, "-n", ns, "--sort-by", ".metadata.name",

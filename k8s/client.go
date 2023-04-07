@@ -22,6 +22,7 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	case "deployment":
 		return query.Deployments(ns, wide)
 	case "ingress":
+		return query.Ingresses(ns, wide)
 	case "pvc":
 	case "daemonset":
 	case "replicaset":

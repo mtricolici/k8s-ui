@@ -313,6 +313,14 @@ func (m *Menu) drawVerticalLineBottom(y int, x int, count int) {
 	m.screen.MoveAddChar(y, x, gc.ACS_LLCORNER)
 	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
 	m.screen.MoveAddChar(y, x+count+1, gc.ACS_LRCORNER)
+	max_x := x + count + 1
+	columns_count := len(m.max)
+	for i, max := range m.max {
+		x += max + 1
+		if x < max_x && i < columns_count-1 {
+			m.screen.MoveAddChar(y, x, gc.ACS_BTEE)
+		}
+	}
 	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM_DELIMITER)
 }
 

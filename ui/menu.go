@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	max_name_size = 30
+	max_name_size = 35
 )
 
 type (
@@ -22,6 +22,9 @@ type Menu struct {
 	screen *gc.Window
 	names  []string
 	items  []string
+
+	// max lenght per column - or number of characters in a column
+	max []int
 
 	Hints1 [][]string
 	Hints2 [][]string
@@ -79,7 +82,7 @@ func (m *Menu) SetCustomPosition(x, y, size_x, size_y int, show_header bool) {
 func (m *Menu) buildItems(data [][]string) {
 	m.items = make([]string, len(data))
 	m.names = make([]string, len(data))
-	max := make([]int, len(data[0]))
+	m.max = make([]int, len(data[0]))
 
 	// make names shorter!
 	for i := range data {
@@ -89,8 +92,8 @@ func (m *Menu) buildItems(data [][]string) {
 
 	for _, line := range data {
 		for col, colValue := range line {
-			if max[col] < len(colValue) {
-				max[col] = len(colValue)
+			if m.max[col] < len(colValue) {
+				m.max[col] = len(colValue)
 			}
 		}
 	}
@@ -99,14 +102,13 @@ func (m *Menu) buildItems(data [][]string) {
 		m.items[i] = ""
 
 		for col, colValue := range line {
-			if columnRightAlign(data[0][col]) {
-				format := fmt.Sprintf("%s%d%s ", "%", max[col], "s")
+			if i > 0 && columnRightAlign(data[0][col]) {
+				format := fmt.Sprintf("%s%d%s ", "%", m.max[col], "s")
 				m.items[i] += fmt.Sprintf(format, colValue)
 			} else {
-				format := fmt.Sprintf("%s-%d%s ", "%", max[col], "s")
+				format := fmt.Sprintf("%s-%d%s ", "%", m.max[col], "s")
 				m.items[i] += fmt.Sprintf(format, colValue)
 			}
-
 		}
 	}
 
@@ -238,6 +240,7 @@ func (m *Menu) drawMenu() {
 			if m.show_header {
 				ncurses.HLine(ncurses.COLOR_MENU_HEADER, y, x, ' ', windowHorizontalSize+2)
 				ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_HEADER, y, x+1, windowHorizontalSize, item)
+				m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_HEADER, ncurses.COLOR_MENU_HEADER)
 				y++ // Move to next line
 			}
 			m.drawVerticalLineTop(y, x, windowHorizontalSize)
@@ -249,28 +252,58 @@ func (m *Menu) drawMenu() {
 			continue // Ingore hidden items
 		}
 
-		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x, gc.ACS_VLINE)
+		//ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x, gc.ACS_VLINE)
 
 		if i == m.Index {
 			ncurses.HLine(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, ' ', windowHorizontalSize)
 			ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, windowHorizontalSize, item)
+			m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_ITEM, ncurses.COLOR_MENU_ITEM_SELECTED)
 		} else {
 			ncurses.HLine(ncurses.COLOR_MENU_ITEM, y, x+1, ' ', windowHorizontalSize)
 			ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_ITEM, y, x+1, windowHorizontalSize, item)
+			m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_ITEM, ncurses.COLOR_MENU_ITEM)
 		}
 
-		ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+windowHorizontalSize+1, gc.ACS_VLINE)
+		//ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+windowHorizontalSize+1, gc.ACS_VLINE)
 		y++ // Move to next line
 	}
 
 	m.drawVerticalLineBottom(y, x, windowHorizontalSize)
 }
 
+func (m *Menu) drawColumnsDelimiters(y int, color1, color2 int16) {
+	x := m.top_left_x
+
+	max_x := x + m.menu_size_x - 1
+
+	for i, max := range m.max {
+		if x < max_x {
+			if i == 0 {
+				ncurses.AddChar(color1, y, x, gc.ACS_VLINE)
+			} else {
+				ncurses.AddChar(color2, y, x, gc.ACS_VLINE)
+			}
+		}
+
+		x += max + 1
+	}
+	ncurses.AddChar(color1, y, max_x, gc.ACS_VLINE)
+}
+
 func (m *Menu) drawVerticalLineTop(y int, x int, count int) {
 	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM)
-	m.screen.MoveAddChar(y, x, gc.ACS_ULCORNER)
+	m.screen.MoveAddChar(y, x, gc.ACS_LTEE)
 	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
-	m.screen.MoveAddChar(y, x+count+1, gc.ACS_URCORNER)
+	m.screen.MoveAddChar(y, x+count+1, gc.ACS_RTEE)
+
+	max_x := x + count + 1
+	columns_count := len(m.max)
+	for i, max := range m.max {
+		x += max + 1
+		if x < max_x && i < columns_count-1 {
+			m.screen.MoveAddChar(y, x, gc.ACS_PLUS)
+		}
+	}
 	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
 }
 

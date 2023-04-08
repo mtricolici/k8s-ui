@@ -26,6 +26,7 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	case "pvc":
 		return query.PersistentVolumeClaims(ns, wide)
 	case "DaemonSet":
+		return query.DaemonSets(ns, wide)
 	case "ReplicaSet":
 	case "StatefulSet":
 		return query.StatefulSets(ns, wide)

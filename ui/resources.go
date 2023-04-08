@@ -160,6 +160,13 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
+	case gc.KEY_F7:
+		ok, filter := ncurses.InputDialog("Filer (regex allowed)", 30)
+		if ok {
+			ncurses.MessageBox("warning", fmt.Sprintf("Not implemented yet. filter: '%s'", filter), 1000)
+		}
+
+		return true
 	}
 
 	return false

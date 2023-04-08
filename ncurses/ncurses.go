@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	gc "github.com/rthornton128/goncurses"
@@ -53,7 +54,7 @@ func Init() *gc.Window {
 	gc.Raw(true)
 	gc.Echo(false)
 	gc.Cursor(0)
-	gc.SetEscDelay(50)
+	gc.SetEscDelay(200)
 	stdscr.Keypad(true)
 
 	delimiter := int16(gc.C_GREEN)
@@ -135,6 +136,61 @@ func MessageBox(title, message string, duration int) {
 	win := MessageBoxAsync(title, message)
 	time.Sleep(time.Duration(duration) * time.Millisecond)
 	win.Delete()
+}
+
+func InputDialog(title string, max int) (bool, string) {
+	win := MessageBoxAsync(title, strings.Repeat(" ", max+1))
+	win.Keypad(true)
+	win.Move(1, 1)
+
+	// show cursor
+	gc.Cursor(1)
+
+	var input string
+	success := true
+
+	for {
+		ch := win.GetChar()
+		switch ch {
+		case gc.KEY_ESC:
+			input = ""
+			success = false
+			goto input_done
+		case gc.KEY_RETURN, gc.KEY_ENTER:
+			success = true
+			goto input_done
+		case gc.KEY_BACKSPACE: //TODO: 8 too ? test on other terminal types
+			if len(input) > 0 {
+				input = input[:len(input)-1]
+
+				win.ColorOn(COLOR_MESSAGEBOX)
+				win.HLine(1, 1, ' ', max)
+				win.ColorOff(COLOR_MESSAGEBOX)
+				win.MovePrint(1, 1, input)
+				win.NoutRefresh()
+				gc.Update()
+			}
+		default:
+			if ch >= 32 && ch <= 126 {
+				if len(input) < max {
+					input += string(rune(ch))
+					win.ColorOn(COLOR_MESSAGEBOX)
+					win.HLine(1, 1, ' ', max)
+					win.ColorOff(COLOR_MESSAGEBOX)
+					win.MovePrint(1, 1, input)
+					win.NoutRefresh()
+					gc.Update()
+				}
+			}
+		}
+	}
+
+input_done:
+	// Hide cursor
+	gc.Cursor(0)
+
+	win.Delete()
+	return success, input
 }
 
 func Clear_screen() {

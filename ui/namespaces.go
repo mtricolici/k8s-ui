@@ -65,7 +65,7 @@ func (m *MenuNamespaces) DrawHeader() {
 
 func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *string) bool {
 	switch key {
-	case gc.KEY_RETURN:
+	case gc.KEY_RETURN, gc.KEY_ENTER:
 		if selectedItem != nil {
 			ns := (*selectedItem) // Column 0 is ns name (we don't need other columns here)
 			podsMenu := NewResourcesMenu(m.screen, ns)
@@ -107,6 +107,13 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *string) bool {
 			cmd := fmt.Sprintf("kubectl edit ns %s", ns)
 			ncurses.ExecuteCommand(cmd)
 		}
+		return true
+	case gc.KEY_F7:
+		ok, filter := ncurses.InputDialog("Filer (regex allowed)", 30)
+		if ok {
+			ncurses.MessageBox("warning", fmt.Sprintf("Not implemented yet. filter: '%s'", filter), 1000)
+		}
+
 		return true
 
 	}

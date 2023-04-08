@@ -99,7 +99,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		m.reload()
 		return true
 	case gc.KEY_F2:
-		mnu := NewResourceTypesMenu(m.screen, m.ns)
+		mnu := NewResourceTypesMenu(m.screen, m.ns, m.resourceType)
 		mnu.Show()
 
 		if len(mnu.SelectedType) > 0 {

@@ -8,23 +8,23 @@ type MenuResourceTypes struct {
 	screen *gc.Window
 	menu   *Menu
 
-	ns string
-
-	SelectedType string
+	ns             string
+	menuStartIndex int
+	SelectedType   string
 }
 
-func NewResourceTypesMenu(screen *gc.Window, namespace string) *MenuResourceTypes {
+func NewResourceTypesMenu(screen *gc.Window, namespace, selectedResourceType string) *MenuResourceTypes {
 
 	mnu := MenuResourceTypes{
 		screen: screen,
 		menu:   nil,
 		ns:     namespace,
 	}
-	mnu.load()
+	mnu.load(selectedResourceType)
 	return &mnu
 }
 
-func (m *MenuResourceTypes) load() {
+func (m *MenuResourceTypes) load(selectedResourceType string) {
 	data := [][]string{
 		{""},
 		{"all"},
@@ -36,12 +36,13 @@ func (m *MenuResourceTypes) load() {
 		{"DaemonSet"},
 		{"ReplicaSet"},
 		{"StatefulSet"},
-		{"Endpoint"},
 		{"HorizontalPodAutoscaler"},
-		{"custom ..."},
 	}
+
 	m.menu = NewMenu(m.screen, data)
 	m.menu.FuncHandleKey = m.HandleKey
+	m.menu.FuncCustomStartIndex = m.CustomStartIndex
+	m.menuStartIndex = findSelectedIndex(data, selectedResourceType)
 
 	size_x := 30
 	size_y := 16
@@ -50,6 +51,15 @@ func (m *MenuResourceTypes) load() {
 	y := 1
 
 	m.menu.SetCustomPosition(x, y, size_x, size_y, false)
+}
+
+func findSelectedIndex(data [][]string, resourceType string) int {
+	for i, v := range data {
+		if len(v) > 0 && v[0] == resourceType {
+			return i
+		}
+	}
+	return 1 // by default show select 1st element
 }
 
 func (m *MenuResourceTypes) Show() {
@@ -65,4 +75,8 @@ func (m *MenuResourceTypes) HandleKey(key gc.Key, selectedItem *string) bool {
 		return true
 	}
 	return false
+}
+
+func (m *MenuResourceTypes) CustomStartIndex() int {
+	return m.menuStartIndex
 }

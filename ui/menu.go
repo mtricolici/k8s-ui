@@ -14,14 +14,16 @@ const (
 )
 
 type (
-	MenuHeaderFunc    func()
-	MenuHandleKeyFunc func(key gc.Key, selectedItem *string) bool
+	MenuHeaderFunc       func()
+	MenuHandleKeyFunc    func(key gc.Key, selectedItem *string) bool
+	MenuCustomStartIndex func() int
 )
 
 type Menu struct {
 	screen *gc.Window
-	names  []string
-	items  []string
+
+	names []string
+	items []string
 
 	// max lenght per column - or number of characters in a column
 	max []int
@@ -29,9 +31,10 @@ type Menu struct {
 	Hints1 [][]string
 	Hints2 [][]string
 
-	Index         int
-	FuncHeader    MenuHeaderFunc
-	FuncHandleKey MenuHandleKeyFunc
+	Index                int
+	FuncHeader           MenuHeaderFunc
+	FuncHandleKey        MenuHandleKeyFunc
+	FuncCustomStartIndex MenuCustomStartIndex
 
 	CloseMenu bool
 
@@ -179,7 +182,12 @@ func (m *Menu) navigateTo(jump int) {
 }
 
 func (m *Menu) Show() {
-	m.Index = 1
+	if m.FuncCustomStartIndex != nil {
+		m.Index = m.FuncCustomStartIndex()
+	} else {
+		m.Index = 1
+	}
+
 	m.calcNavigationVars()
 
 	for {

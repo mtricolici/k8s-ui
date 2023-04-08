@@ -28,6 +28,7 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	case "DaemonSet":
 		return query.DaemonSets(ns, wide)
 	case "ReplicaSet":
+		return query.ReplicaSets(ns, wide)
 	case "StatefulSet":
 		return query.StatefulSets(ns, wide)
 	case "Endpoint":

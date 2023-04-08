@@ -240,7 +240,7 @@ func (m *Menu) drawMenu() {
 			if m.show_header {
 				ncurses.HLine(ncurses.COLOR_MENU_HEADER, y, x, ' ', windowHorizontalSize+2)
 				ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_HEADER, y, x+1, windowHorizontalSize, item)
-				m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_HEADER, ncurses.COLOR_MENU_HEADER)
+				m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_HEADER_DELIMITER, ncurses.COLOR_MENU_HEADER_DELIMITER)
 				y++ // Move to next line
 			}
 			m.drawVerticalLineTop(y, x, windowHorizontalSize)
@@ -257,11 +257,11 @@ func (m *Menu) drawMenu() {
 		if i == m.Index {
 			ncurses.HLine(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, ' ', windowHorizontalSize)
 			ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_ITEM_SELECTED, y, x+1, windowHorizontalSize, item)
-			m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_ITEM, ncurses.COLOR_MENU_ITEM_SELECTED)
+			m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_ITEM_DELIMITER, ncurses.COLOR_MENU_ITEM_SELECTED)
 		} else {
 			ncurses.HLine(ncurses.COLOR_MENU_ITEM, y, x+1, ' ', windowHorizontalSize)
 			ncurses.AddTextMaxWidth(ncurses.COLOR_MENU_ITEM, y, x+1, windowHorizontalSize, item)
-			m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_ITEM, ncurses.COLOR_MENU_ITEM)
+			m.drawColumnsDelimiters(y, ncurses.COLOR_MENU_ITEM_DELIMITER, ncurses.COLOR_MENU_ITEM_DELIMITER)
 		}
 
 		//ncurses.AddChar(ncurses.COLOR_MENU_ITEM, y, x+windowHorizontalSize+1, gc.ACS_VLINE)
@@ -291,7 +291,7 @@ func (m *Menu) drawColumnsDelimiters(y int, color1, color2 int16) {
 }
 
 func (m *Menu) drawVerticalLineTop(y int, x int, count int) {
-	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM)
+	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM_DELIMITER)
 	m.screen.MoveAddChar(y, x, gc.ACS_LTEE)
 	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
 	m.screen.MoveAddChar(y, x+count+1, gc.ACS_RTEE)
@@ -304,16 +304,16 @@ func (m *Menu) drawVerticalLineTop(y int, x int, count int) {
 			m.screen.MoveAddChar(y, x, gc.ACS_PLUS)
 		}
 	}
-	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
+	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM_DELIMITER)
 }
 
 func (m *Menu) drawVerticalLineBottom(y int, x int, count int) {
 
-	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM)
+	m.screen.ColorOn(ncurses.COLOR_MENU_ITEM_DELIMITER)
 	m.screen.MoveAddChar(y, x, gc.ACS_LLCORNER)
 	m.screen.HLine(y, x+1, gc.ACS_HLINE, count)
 	m.screen.MoveAddChar(y, x+count+1, gc.ACS_LRCORNER)
-	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM)
+	m.screen.ColorOff(ncurses.COLOR_MENU_ITEM_DELIMITER)
 }
 
 func (m *Menu) drawHints(y int, hints [][]string) {

@@ -12,16 +12,19 @@ import (
 )
 
 const (
-	COLOR_DEFAULT            int16 = 1
-	COLOR_HEADER             int16 = 2
-	COLOR_HEADER_HIGH        int16 = 3
-	COLOR_HEADER_HINT        int16 = 4
-	COLOR_MENU_HEADER        int16 = 5
-	COLOR_MENU_ITEM          int16 = 6
-	COLOR_MENU_ITEM_SELECTED int16 = 7
-	COLOR_HINTS_TEXT         int16 = 8
-	COLOR_HINTS_SHORTCUT     int16 = 9
-	COLOR_MESSAGEBOX         int16 = 10
+	COLOR_DEFAULT                      int16 = 1
+	COLOR_HEADER                       int16 = 2
+	COLOR_HEADER_HIGH                  int16 = 3
+	COLOR_HEADER_HINT                  int16 = 4
+	COLOR_MENU_HEADER                  int16 = 5
+	COLOR_MENU_HEADER_DELIMITER        int16 = 6
+	COLOR_MENU_ITEM                    int16 = 7
+	COLOR_MENU_ITEM_DELIMITER          int16 = 8
+	COLOR_MENU_ITEM_SELECTED           int16 = 9
+	COLOR_MENU_ITEM_SELECTED_DELIMITER int16 = 10
+	COLOR_HINTS_TEXT                   int16 = 11
+	COLOR_HINTS_SHORTCUT               int16 = 12
+	COLOR_MESSAGEBOX                   int16 = 13
 )
 
 var (
@@ -53,14 +56,19 @@ func Init() *gc.Window {
 	gc.SetEscDelay(50)
 	stdscr.Keypad(true)
 
+	delimiter := int16(gc.C_GREEN)
+
 	gc.InitPair(COLOR_DEFAULT, gc.C_WHITE, gc.C_BLACK)
 	gc.InitPair(COLOR_HEADER, gc.C_BLACK, gc.C_WHITE)
 	gc.InitPair(COLOR_HEADER_HIGH, gc.C_GREEN, gc.C_WHITE)
 	gc.InitPair(COLOR_HEADER_HINT, gc.C_YELLOW, gc.C_WHITE)
 
 	gc.InitPair(COLOR_MENU_HEADER, gc.C_GREEN, gc.C_BLACK)
+	gc.InitPair(COLOR_MENU_HEADER_DELIMITER, delimiter, gc.C_BLACK)
 	gc.InitPair(COLOR_MENU_ITEM, gc.C_WHITE, gc.C_BLUE)
+	gc.InitPair(COLOR_MENU_ITEM_DELIMITER, delimiter, gc.C_BLUE)
 	gc.InitPair(COLOR_MENU_ITEM_SELECTED, gc.C_BLACK, gc.C_CYAN)
+	gc.InitPair(COLOR_MENU_ITEM_SELECTED_DELIMITER, delimiter, gc.C_CYAN)
 
 	gc.InitPair(COLOR_HINTS_TEXT, gc.C_WHITE, gc.C_BLACK)
 	gc.InitPair(COLOR_HINTS_SHORTCUT, gc.C_YELLOW, gc.C_BLACK)

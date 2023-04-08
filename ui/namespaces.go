@@ -94,6 +94,13 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *string) bool {
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
+	case gc.KEY_F3:
+		if selectedItem != nil {
+			ns := (*selectedItem)
+			cmd := fmt.Sprintf("kubectl get ns %s -o yaml|less -S", ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+		return true
 	case gc.KEY_F4:
 		if selectedItem != nil {
 			ns := (*selectedItem)

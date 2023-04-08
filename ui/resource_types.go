@@ -13,18 +13,18 @@ type MenuResourceTypes struct {
 	SelectedType   string
 }
 
-func NewResourceTypesMenu(screen *gc.Window, namespace, selectedResourceType string) *MenuResourceTypes {
+func NewResourceTypesMenu(screen *gc.Window, namespace string) *MenuResourceTypes {
 
 	mnu := MenuResourceTypes{
 		screen: screen,
 		menu:   nil,
 		ns:     namespace,
 	}
-	mnu.load(selectedResourceType)
+	mnu.load()
 	return &mnu
 }
 
-func (m *MenuResourceTypes) load(selectedResourceType string) {
+func (m *MenuResourceTypes) load() {
 	data := [][]string{
 		{""},
 		{"all"},
@@ -42,7 +42,7 @@ func (m *MenuResourceTypes) load(selectedResourceType string) {
 	m.menu = NewMenu(m.screen, data)
 	m.menu.FuncHandleKey = m.HandleKey
 	m.menu.FuncCustomStartIndex = m.CustomStartIndex
-	m.menuStartIndex = findSelectedIndex(data, selectedResourceType)
+	m.menuStartIndex = findSelectedIndex(data)
 
 	size_x := 30
 	size_y := 16
@@ -53,9 +53,9 @@ func (m *MenuResourceTypes) load(selectedResourceType string) {
 	m.menu.SetCustomPosition(x, y, size_x, size_y, false)
 }
 
-func findSelectedIndex(data [][]string, resourceType string) int {
+func findSelectedIndex(data [][]string) int {
 	for i, v := range data {
-		if len(v) > 0 && v[0] == resourceType {
+		if len(v) > 0 && v[0] == ui_resource_type {
 			return i
 		}
 	}

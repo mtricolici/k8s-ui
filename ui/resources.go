@@ -16,25 +16,20 @@ type MenuResources struct {
 
 	ns         string
 	itemsCount int
-	wide       bool
-
-	resourceType string
 }
 
 func NewResourcesMenu(screen *gc.Window, namespace string) *MenuResources {
 	mnu := MenuResources{
-		screen:       screen,
-		menu:         nil,
-		ns:           namespace,
-		wide:         false,
-		resourceType: "Pod", //default show pods in a namespace
+		screen: screen,
+		menu:   nil,
+		ns:     namespace,
 	}
 
 	return &mnu
 }
 
 func (m *MenuResources) Load() error {
-	resources, err := k8s.GetResources(m.ns, m.resourceType, m.wide)
+	resources, err := k8s.GetResources(m.ns, ui_resource_type, ui_wide_view)
 	if err != nil {
 		return err
 	}
@@ -81,8 +76,8 @@ func (m *MenuResources) DrawHeader() {
 
 	ncurses.AddText(ncurses.COLOR_HEADER, 0, x, "view:")
 	x += 5
-	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, x, m.resourceType)
-	x += len(m.resourceType)
+	ncurses.AddText(ncurses.COLOR_HEADER_HIGH, 0, x, ui_resource_type)
+	x += len(ui_resource_type)
 	ncurses.AddText(ncurses.COLOR_HEADER_HINT, 0, x, "<F2>")
 	x += 5
 
@@ -92,14 +87,14 @@ func (m *MenuResources) DrawHeader() {
 func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 	switch key {
 	case 111: // key 'o' has been pressed
-		m.wide = !m.wide
+		ui_wide_view = !ui_wide_view
 		m.reload()
 		return true
 	case gc.KEY_F5:
 		m.reload()
 		return true
 	case gc.KEY_F2:
-		mnu := NewResourceTypesMenu(m.screen, m.ns, m.resourceType)
+		mnu := NewResourceTypesMenu(m.screen, m.ns)
 		mnu.Show()
 
 		if len(mnu.SelectedType) > 0 {
@@ -108,7 +103,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 			} else if strings.HasPrefix(mnu.SelectedType, "custom") {
 				ncurses.MessageBox("Error", "CUSTOM not implemented yet", 1000)
 			} else {
-				m.resourceType = mnu.SelectedType
+				ui_resource_type = mnu.SelectedType
 				m.reload()
 			}
 		}
@@ -116,12 +111,12 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 	case 100: // character 'd' - describe resource
 		if selectedItem != nil {
 			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl describe %s %s -n %s | less -S", m.resourceType, name, m.ns)
+			cmd := fmt.Sprintf("kubectl describe %s %s -n %s | less -S", ui_resource_type, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case 108: // character 'l' - view logs (valid for 'pods' only)
-		if selectedItem != nil && m.resourceType == "Pod" {
+		if selectedItem != nil && ui_resource_type == "Pod" {
 			pod := (*selectedItem)
 			container := m.chooseContainer("Logs for ?", pod)
 			if len(container) > 0 {
@@ -131,7 +126,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 		return true
 	case 112: // character 'p' - view previous logs (valid for 'pods' only)
-		if selectedItem != nil && m.resourceType == "Pod" {
+		if selectedItem != nil && ui_resource_type == "Pod" {
 			pod := (*selectedItem)
 			container := m.chooseContainer("Logs for ?", pod)
 			if len(container) > 0 {
@@ -141,7 +136,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 		return true
 	case 101: // character 'e' - execute a shell inside container
-		if selectedItem != nil && m.resourceType == "Pod" {
+		if selectedItem != nil && ui_resource_type == "Pod" {
 
 			pod := (*selectedItem)
 			container := m.chooseContainer("Execute where ?", pod)
@@ -154,14 +149,14 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 	case gc.KEY_F4:
 		if selectedItem != nil {
 			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl edit %s %s -n %s", m.resourceType, name, m.ns)
+			cmd := fmt.Sprintf("kubectl edit %s %s -n %s", ui_resource_type, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
 	case gc.KEY_F3:
 		if selectedItem != nil {
 			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl get %s %s -n %s -o yaml|less -S", m.resourceType, name, m.ns)
+			cmd := fmt.Sprintf("kubectl get %s %s -n %s -o yaml|less -S", ui_resource_type, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true

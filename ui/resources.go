@@ -56,6 +56,7 @@ func (m *MenuResources) Load() error {
 		}
 	} else {
 		m.menu.Reload(resources)
+		m.itemsCount = m.menu.GetItemsCount()
 	}
 
 	return nil
@@ -161,9 +162,14 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 		return true
 	case gc.KEY_F7:
-		ok, filter := ncurses.InputDialog("Filer (regex allowed)", 30)
+		ok, filter := ncurses.InputDialog("Filer (regex)", 30)
 		if ok {
-			ncurses.MessageBox("warning", fmt.Sprintf("Not implemented yet. filter: '%s'", filter), 1000)
+			err := m.menu.SetFilter(filter)
+			if err != nil {
+				ncurses.MessageBox("error", err.Error(), 1000)
+			} else {
+				m.reload()
+			}
 		}
 
 		return true

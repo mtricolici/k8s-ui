@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"regexp"
 
 	"k8s_ui/ncurses"
 	"k8s_ui/utils"
@@ -30,6 +31,8 @@ type Menu struct {
 
 	Hints1 [][]string
 	Hints2 [][]string
+
+	filter *regexp.Regexp
 
 	Index                int
 	FuncHeader           MenuHeaderFunc
@@ -82,7 +85,54 @@ func (m *Menu) SetCustomPosition(x, y, size_x, size_y int, show_header bool) {
 	m.erase_screen = false
 }
 
-func (m *Menu) buildItems(data [][]string) {
+func (m *Menu) GetItemsCount() int {
+	return len(m.names) - 1 // 1st element is header
+}
+
+func (m *Menu) SetFilter(filter string) error {
+	newFilter, err := regexp.Compile("(?i)" + filter)
+	if err != nil {
+		return fmt.Errorf(err.Error())
+	}
+
+	m.filter = newFilter
+	return nil
+}
+
+func (m *Menu) rawMatch(row []string) bool {
+	for _, value := range row {
+		if m.filter.MatchString(value) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (m *Menu) filterData(data [][]string) [][]string {
+	if m.filter == nil {
+		// nothin to filter. no regex defined
+		return data
+	}
+
+	filteredData := [][]string{
+		data[0], // this is header
+	}
+
+	for i, row := range data {
+		// skip header
+		if i > 0 {
+			if m.rawMatch(row) {
+				filteredData = append(filteredData, row)
+			}
+		}
+	}
+
+	return filteredData
+}
+
+func (m *Menu) buildItems(unfiltered_data [][]string) {
+	data := m.filterData(unfiltered_data)
 	m.items = make([]string, len(data))
 	m.names = make([]string, len(data))
 	m.max = make([]int, len(data[0]))

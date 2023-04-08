@@ -1,3 +1,9 @@
 # k8s-ui
 
-I need a tool for quick k8s troubleshooting instead of wasting time writing kubectl commands
+Ncurses view of a kubernetes cluster (like Midnight Commander)
+
+Allows to naviate through namespaces to view pods, services, deployments etc.
+
+Example:
+
+![demo](demo.png)

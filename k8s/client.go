@@ -31,6 +31,7 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 		return query.StatefulSets(ns, wide)
 	case "Endpoint":
 	case "HorizontalPodAutoscaler":
+		return query.HPAs(ns, wide)
 	}
 
 	return nil, fmt.Errorf("get resource '%s' not implemented yet", resource)

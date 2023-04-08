@@ -1,5 +1,4 @@
 - handle terminal resize - refresh?
 - pod execute command - allow custom command (not only sh by default)
-- resources filter by name (allow regex?)
 - service pod forward
 - deployment rollout restart

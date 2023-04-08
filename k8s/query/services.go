@@ -39,7 +39,7 @@ func Services(ns string, wide bool) ([][]string, error) {
 		row[4] = svc_ports(&svc)
 		row[5] = utils.HumanElapsedTime(svc.CreationTimestamp.Time)
 		if wide {
-			row[6] = svc_selectors(&svc)
+			row[6] = utils.SelectorToString(svc.Spec.Selector)
 		}
 		data = append(data, row)
 	}
@@ -67,13 +67,4 @@ func svc_ports(svc *v1.Service) string {
 	}
 
 	return strings.Join(ports, ",")
-}
-
-func svc_selectors(svc *v1.Service) string {
-	selectors := []string{}
-	for k, v := range svc.Spec.Selector {
-		selectors = append(selectors, k+"="+v)
-	}
-
-	return strings.Join(selectors, ",")
 }

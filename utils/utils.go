@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -44,4 +45,17 @@ func HumanElapsedTime(t time.Time) string {
 
 	years := months / 12
 	return fmt.Sprintf("%dy", years)
+}
+
+func SelectorToString(sel map[string]string) string {
+	if sel == nil {
+		return "<empty>"
+	}
+
+	var values []string
+	for k, v := range sel {
+		values = append(values, k+"="+v)
+	}
+
+	return strings.Join(values, ",")
 }

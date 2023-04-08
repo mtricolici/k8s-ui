@@ -80,13 +80,8 @@ func deployment_images(d *v1.Deployment) string {
 
 func deployment_selectors(d *v1.Deployment) string {
 	if d.Spec.Selector == nil {
-		return ""
+		return "<none>"
 	}
 
-	selectors := []string{}
-	for k, v := range (*d.Spec.Selector).MatchLabels {
-		selectors = append(selectors, k+"="+v)
-	}
-
-	return strings.Join(selectors, ",")
+	return utils.SelectorToString(d.Spec.Selector.MatchLabels)
 }

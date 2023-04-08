@@ -72,7 +72,7 @@ func ds_node_selector(ds *v1.DaemonSet) string {
 	if ds.Spec.Template.Spec.NodeSelector == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", ds.Spec.Template.Spec.NodeSelector)
+	return utils.SelectorToString(ds.Spec.Template.Spec.NodeSelector)
 }
 
 func ds_containers(ds *v1.DaemonSet) string {

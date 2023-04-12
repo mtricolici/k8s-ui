@@ -2,3 +2,4 @@
 - pod execute command - allow custom command (not only sh by default)
 - service pod forward
 - deployment rollout restart
+- show helm releases + helm menu like (history, status)

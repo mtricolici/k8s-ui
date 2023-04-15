@@ -27,7 +27,6 @@ func NewResourceTypesMenu(screen *gc.Window, namespace string) *MenuResourceType
 func (m *MenuResourceTypes) load() {
 	data := [][]string{
 		{""},
-		{"all"},
 		{"Pod"},
 		{"Service"},
 		{"Deployment"},

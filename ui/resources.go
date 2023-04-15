@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
+	"k8s_ui/ui/hints"
 	"k8s_ui/utils"
 	"strings"
 
@@ -47,17 +48,12 @@ func (m *MenuResources) Load() error {
 			{"Refresh", "F5"},
 			{"Filter", "F7"},
 		}
-		m.menu.Hints2 = [][]string{
-			{"Describe", "d"},
-			{"Wide", "o"},
-			{"Logs", "l"},
-			{"Prev.logs", "p"},
-			{"Exec", "e"},
-		}
 	} else {
 		m.menu.Reload(resources)
 		m.itemsCount = m.menu.GetItemsCount()
 	}
+
+	m.menu.Hints2 = hints.GetHints().GetForResource(ui_resource_type)
 
 	return nil
 }

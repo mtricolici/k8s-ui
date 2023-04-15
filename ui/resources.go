@@ -6,7 +6,6 @@ import (
 	"k8s_ui/ncurses"
 	"k8s_ui/ui/hints"
 	"k8s_ui/utils"
-	"strings"
 
 	gc "github.com/rthornton128/goncurses"
 )
@@ -93,16 +92,9 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 	case gc.KEY_F2:
 		mnu := NewResourceTypesMenu(m.screen, m.ns)
 		mnu.Show()
-
 		if len(mnu.SelectedType) > 0 {
-			if mnu.SelectedType == "all" {
-				ncurses.MessageBox("Error", "ALL not implemented yet", 1000)
-			} else if strings.HasPrefix(mnu.SelectedType, "custom") {
-				ncurses.MessageBox("Error", "CUSTOM not implemented yet", 1000)
-			} else {
-				ui_resource_type = mnu.SelectedType
-				m.reload()
-			}
+			ui_resource_type = mnu.SelectedType
+			m.reload()
 		}
 		return true
 	case 100: // character 'd' - describe resource
@@ -119,24 +111,16 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		m.showLogs(selectedItem, "-p")
 		return true
 	case 101: // character 'e' - execute a shell inside container
-		if selectedItem != nil && ui_resource_type == "Pod" {
-
-			pod := (*selectedItem)
-			container := m.chooseContainer("Execute where ?", pod)
-			if len(container) > 0 {
-				cmd := fmt.Sprintf("kubectl exec -it %s -n %s -c %s -- sh", pod, m.ns, container)
-				ncurses.ExecuteCommand(cmd)
-			}
-		}
+		m.executeShell(selectedItem)
 		return true
-	case gc.KEY_F4:
+	case gc.KEY_F4: // edit resource as yaml
 		if selectedItem != nil {
 			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl edit %s %s -n %s", ui_resource_type, name, m.ns)
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
-	case gc.KEY_F3:
+	case gc.KEY_F3: // View resource yaml
 		if selectedItem != nil {
 			name := (*selectedItem)
 			cmd := fmt.Sprintf("kubectl get %s %s -n %s -o yaml|less -S", ui_resource_type, name, m.ns)
@@ -180,6 +164,17 @@ func (m *MenuResources) showLogs(resourceName *string, options string) {
 			}
 		} else {
 			cmd := fmt.Sprintf("kubectl logs %s %s/%s -n %s --all-containers=true| less -S", options, ui_resource_type, name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
+	}
+}
+
+func (m *MenuResources) executeShell(resourceName *string) {
+	if resourceName != nil && ui_resource_type == "Pod" {
+		pod := *resourceName
+		container := m.chooseContainer("Execute where ?", pod)
+		if len(container) > 0 {
+			cmd := fmt.Sprintf("kubectl exec -it %s -n %s -c %s -- sh", pod, m.ns, container)
 			ncurses.ExecuteCommand(cmd)
 		}
 	}

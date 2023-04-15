@@ -16,7 +16,11 @@ func newHint(text, shortcut string, resources ...string) Hint {
 
 func (h *Hint) VisibleToRes(resource string) bool {
 	for _, res := range h.resources {
-		if res == "all" || res == resource {
+		if res == "all" && resource != "helm" {
+			return true
+		}
+
+		if res == resource {
 			return true
 		}
 	}

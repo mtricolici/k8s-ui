@@ -17,6 +17,9 @@ func createHints() *Hints {
 		newHint("Exec", "e", "Pod"),
 		newHint("Port-Forward", "p", "Service"),
 		newHint("Restart", "r", "Deployment"),
+		newHint("Status", "s", "helm"),
+		newHint("History", "h", "helm"),
+		newHint("Rollback", "r", "helm"),
 	}
 
 	return &Hints{

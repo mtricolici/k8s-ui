@@ -36,6 +36,7 @@ func (m *MenuResourceTypes) load() {
 		{"ReplicaSet"},
 		{"StatefulSet"},
 		{"HorizontalPodAutoscaler"},
+		{"helm"},
 	}
 
 	m.menu = NewMenu(m.screen, data)

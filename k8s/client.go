@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"fmt"
+	"k8s_ui/k8s/helm"
 	"k8s_ui/k8s/query"
 )
 
@@ -34,6 +35,8 @@ func GetResources(ns, resource string, wide bool) ([][]string, error) {
 	case "Endpoint":
 	case "HorizontalPodAutoscaler":
 		return query.HPAs(ns, wide)
+	case "helm":
+		return helm.Releases(ns)
 	}
 
 	return nil, fmt.Errorf("get resource '%s' not implemented yet", resource)

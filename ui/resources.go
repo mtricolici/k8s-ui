@@ -112,12 +112,12 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		m.executeShell(selectedItem)
 		return true
 	case gc.KEY_F4: // edit resource as yaml
-		if selectedItem != nil {
+		if selectedItem != nil && ui_resource_type != "helm" {
 			ncurses.ExecuteCommand(false, "kubectl edit %s %s -n %s", ui_resource_type, *selectedItem, m.ns)
 		}
 		return true
 	case gc.KEY_F3: // View resource yaml
-		if selectedItem != nil {
+		if selectedItem != nil && ui_resource_type != "helm" {
 			ncurses.ExecuteCommand(true, "kubectl get %s %s -n %s -o yaml", ui_resource_type, *selectedItem, m.ns)
 		}
 		return true

@@ -199,12 +199,17 @@ func Clear_screen() {
 	cmd.Run()
 }
 
-func ExecuteCommand(format string, args ...interface{}) {
+func ExecuteCommand(less bool, format string, args ...interface{}) {
 	command := fmt.Sprintf(format, args...)
 	gc.StdScr().Clear()
 	gc.End()
 	Clear_screen()
 	fmt.Printf("Running: %s\n", command)
+
+	if less {
+		command = fmt.Sprintf("{ echo '$%s' && %s ;} | less -S", command, command)
+		fmt.Printf("Running: %s\n", command)
+	}
 
 	cmd := exec.Command("bash", "-c", command)
 	cmd.Stdin = os.Stdin

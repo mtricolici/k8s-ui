@@ -84,17 +84,17 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *string) bool {
 		return true
 	case 100: // character 'd'
 		if selectedItem != nil {
-			ncurses.ExecuteCommand("kubectl describe ns %s | less -S", *selectedItem)
+			ncurses.ExecuteCommand(true, "kubectl describe ns %s", *selectedItem)
 		}
 		return true
 	case gc.KEY_F3:
 		if selectedItem != nil {
-			ncurses.ExecuteCommand("kubectl get ns %s -o yaml|less -S", *selectedItem)
+			ncurses.ExecuteCommand(true, "kubectl get ns %s -o yaml", *selectedItem)
 		}
 		return true
 	case gc.KEY_F4:
 		if selectedItem != nil {
-			ncurses.ExecuteCommand("kubectl edit ns %s", *selectedItem)
+			ncurses.ExecuteCommand(false, "kubectl edit ns %s", *selectedItem)
 		}
 		return true
 	case gc.KEY_F7:

@@ -133,6 +133,16 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		}
 
 		return true
+	case 115: // 's' was pressed
+		if selectedItem != nil && ui_resource_type == "helm" {
+			ncurses.ExecuteCommand("helm status %s -n %s|less -S", *selectedItem, m.ns)
+		}
+		return true
+	case 104: // 'h' was pressed
+		if selectedItem != nil && ui_resource_type == "helm" {
+			ncurses.ExecuteCommand("helm history %s -n %s|less -S", *selectedItem, m.ns)
+		}
+		return true
 	}
 
 	return false

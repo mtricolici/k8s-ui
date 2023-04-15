@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fmt"
 	"k8s_ui/k8s"
 	"k8s_ui/ncurses"
 
@@ -85,23 +84,17 @@ func (m *MenuNamespaces) HandleKey(key gc.Key, selectedItem *string) bool {
 		return true
 	case 100: // character 'd'
 		if selectedItem != nil {
-			ns := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl describe ns %s | less -S", ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl describe ns %s | less -S", *selectedItem)
 		}
 		return true
 	case gc.KEY_F3:
 		if selectedItem != nil {
-			ns := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl get ns %s -o yaml|less -S", ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl get ns %s -o yaml|less -S", *selectedItem)
 		}
 		return true
 	case gc.KEY_F4:
 		if selectedItem != nil {
-			ns := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl edit ns %s", ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl edit ns %s", *selectedItem)
 		}
 		return true
 	case gc.KEY_F7:

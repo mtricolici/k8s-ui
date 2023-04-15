@@ -199,7 +199,8 @@ func Clear_screen() {
 	cmd.Run()
 }
 
-func ExecuteCommand(command string) {
+func ExecuteCommand(format string, args ...interface{}) {
+	command := fmt.Sprintf(format, args...)
 	gc.StdScr().Clear()
 	gc.End()
 	Clear_screen()

@@ -99,9 +99,7 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		return true
 	case 100: // character 'd' - describe resource
 		if selectedItem != nil {
-			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl describe %s %s -n %s | less -S", ui_resource_type, name, m.ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl describe %s %s -n %s | less -S", ui_resource_type, *selectedItem, m.ns)
 		}
 		return true
 	case 108: // character 'l' - view logs
@@ -115,16 +113,12 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 		return true
 	case gc.KEY_F4: // edit resource as yaml
 		if selectedItem != nil {
-			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl edit %s %s -n %s", ui_resource_type, name, m.ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl edit %s %s -n %s", ui_resource_type, *selectedItem, m.ns)
 		}
 		return true
 	case gc.KEY_F3: // View resource yaml
 		if selectedItem != nil {
-			name := (*selectedItem)
-			cmd := fmt.Sprintf("kubectl get %s %s -n %s -o yaml|less -S", ui_resource_type, name, m.ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl get %s %s -n %s -o yaml|less -S", ui_resource_type, *selectedItem, m.ns)
 		}
 		return true
 	case gc.KEY_F7:
@@ -159,12 +153,10 @@ func (m *MenuResources) showLogs(resourceName *string, options string) {
 		if ui_resource_type == "Pod" {
 			container := m.chooseContainer("Logs for ?", name)
 			if len(container) > 0 {
-				cmd := fmt.Sprintf("kubectl logs %s %s -n %s -c %s| less -S", options, name, m.ns, container)
-				ncurses.ExecuteCommand(cmd)
+				ncurses.ExecuteCommand("kubectl logs %s %s -n %s -c %s| less -S", options, name, m.ns, container)
 			}
 		} else {
-			cmd := fmt.Sprintf("kubectl logs %s %s/%s -n %s --all-containers=true| less -S", options, ui_resource_type, name, m.ns)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl logs %s %s/%s -n %s --all-containers=true| less -S", options, ui_resource_type, name, m.ns)
 		}
 	}
 }
@@ -174,8 +166,7 @@ func (m *MenuResources) executeShell(resourceName *string) {
 		pod := *resourceName
 		container := m.chooseContainer("Execute where ?", pod)
 		if len(container) > 0 {
-			cmd := fmt.Sprintf("kubectl exec -it %s -n %s -c %s -- sh", pod, m.ns, container)
-			ncurses.ExecuteCommand(cmd)
+			ncurses.ExecuteCommand("kubectl exec -it %s -n %s -c %s -- sh", pod, m.ns, container)
 		}
 	}
 }

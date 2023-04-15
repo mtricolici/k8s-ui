@@ -112,25 +112,11 @@ func (m *MenuResources) HandleKey(key gc.Key, selectedItem *string) bool {
 			ncurses.ExecuteCommand(cmd)
 		}
 		return true
-	case 108: // character 'l' - view logs (valid for 'pods' only)
-		if selectedItem != nil && ui_resource_type == "Pod" {
-			pod := (*selectedItem)
-			container := m.chooseContainer("Logs for ?", pod)
-			if len(container) > 0 {
-				cmd := fmt.Sprintf("kubectl logs %s -n %s -c %s| less -S", pod, m.ns, container)
-				ncurses.ExecuteCommand(cmd)
-			}
-		}
+	case 108: // character 'l' - view logs
+		m.showLogs(selectedItem, "")
 		return true
-	case 112: // character 'p' - view previous logs (valid for 'pods' only)
-		if selectedItem != nil && ui_resource_type == "Pod" {
-			pod := (*selectedItem)
-			container := m.chooseContainer("Logs for ?", pod)
-			if len(container) > 0 {
-				cmd := fmt.Sprintf("kubectl logs -p %s -n %s -c %s| less -S", pod, m.ns, container)
-				ncurses.ExecuteCommand(cmd)
-			}
-		}
+	case 112: // character 'p' - view previous logs
+		m.showLogs(selectedItem, "-p")
 		return true
 	case 101: // character 'e' - execute a shell inside container
 		if selectedItem != nil && ui_resource_type == "Pod" {
@@ -180,5 +166,21 @@ func (m *MenuResources) reload() {
 	win.Delete() // close 'Loading' dialog ...
 	if err != nil {
 		ncurses.MessageBox("Error", err.Error(), 1000)
+	}
+}
+
+func (m *MenuResources) showLogs(resourceName *string, options string) {
+	if resourceName != nil && resourceHasLogs() {
+		name := *resourceName
+		if ui_resource_type == "Pod" {
+			container := m.chooseContainer("Logs for ?", name)
+			if len(container) > 0 {
+				cmd := fmt.Sprintf("kubectl logs %s %s -n %s -c %s| less -S", options, name, m.ns, container)
+				ncurses.ExecuteCommand(cmd)
+			}
+		} else {
+			cmd := fmt.Sprintf("kubectl logs %s %s/%s -n %s --all-containers=true| less -S", options, ui_resource_type, name, m.ns)
+			ncurses.ExecuteCommand(cmd)
+		}
 	}
 }

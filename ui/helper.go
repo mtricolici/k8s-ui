@@ -15,6 +15,23 @@ func columnRightAlign(column string) bool {
 	return false
 }
 
+func resourceHasLogs() bool {
+	switch ui_resource_type {
+	case "Pod":
+		return true
+	case "Deployment":
+		return true
+	case "ReplicaSet":
+		return true
+	case "StatefulSet":
+		return true
+	case "DaemonSet":
+		return true
+	default:
+		return false
+	}
+}
+
 func (m *MenuResources) chooseContainer(title string, podName string) string {
 	containers, err := k8s.GetPodContainerNames(m.ns, podName)
 	if err != nil {

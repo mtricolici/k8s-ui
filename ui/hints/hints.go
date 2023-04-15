@@ -12,8 +12,8 @@ func createHints() *Hints {
 	hints := []Hint{
 		newHint("Describe", "d", "all"),
 		newHint("Wide", "o", "all"),
-		newHint("Logs", "l", "Pod", "Deployment"),
-		newHint("Prev.logs", "p", "Pod", "Deployment"),
+		newHint("Logs", "l", "Pod", "Deployment", "ReplicaSet", "StatefulSet", "DaemonSet"),
+		newHint("Prev.logs", "p", "Pod", "Deployment", "ReplicaSet", "StatefulSet", "DaemonSet"),
 		newHint("Exec", "e", "Pod"),
 		newHint("Port-Forward", "p", "Service"),
 		newHint("Restart", "r", "Deployment"),

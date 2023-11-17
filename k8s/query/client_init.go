@@ -1,6 +1,8 @@
 package query
 
 import (
+	"os"
+
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -11,7 +13,14 @@ var (
 
 func getClient() (*kubernetes.Clientset, error) {
 	if _client == nil {
-		config, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+
+		kubeConfigPath := os.Getenv("KUBECONFIG")
+		if kubeConfigPath == "" || !fileExists(kubeConfigPath) {
+			// Use default ~/.kube/config
+			kubeConfigPath = clientcmd.RecommendedHomeFile
+		}
+
+		config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 		if err != nil {
 			return nil, err
 		}
@@ -25,4 +34,12 @@ func getClient() (*kubernetes.Clientset, error) {
 	}
 
 	return _client, nil
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
